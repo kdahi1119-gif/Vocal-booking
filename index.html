@@ -68,7 +68,7 @@ header { background: var(--rust-dark); position: relative; overflow: hidden; }
   font-size: 0.72rem; color: var(--text-light); flex-wrap: wrap; gap: 8px;
 }
 .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); display: inline-block; margin-right: 5px; animation: pulse 2s infinite; }
-.sync-dot.err { background: #e05555; animation: none; }
+.sync-dot.err     { background: #e05555; animation: none; }
 .sync-dot.syncing { background: var(--gold); animation: none; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 .refresh-btn {
@@ -153,40 +153,18 @@ main { max-width: 1060px; margin: 0 auto; padding: 28px 20px 80px; }
 .time-slot-row:last-child { border-bottom: none; }
 .ts-label { display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; color: var(--text-mid); background: var(--cream); border-right: 1px solid var(--cream-dark); }
 .ts-cell { display: flex; align-items: center; justify-content: center; font-size: 1.15rem; transition: all 0.15s; cursor: default; position: relative; }
-
-/* 예약 가능 */
 .ts-cell.avail { background: var(--green-bg); cursor: pointer; }
 .ts-cell.avail:hover { background: #D2EAD9; transform: scale(0.96); }
 .ts-cell.avail::after { content: '○'; color: var(--green); font-weight: 700; }
-
-/* 기본 스케줄 불가 or 타인이 이미 예약 */
 .ts-cell.blocked { background: var(--pink-bg); }
 .ts-cell.blocked::after { content: '×'; color: var(--pink-blocked); font-weight: 700; }
-
-/* 예약 창 닫힘 */
 .ts-cell.locked { background: var(--cream); }
 .ts-cell.locked::after { content: '–'; color: var(--cream-mid); font-size: 1.4rem; }
-
-/* 내가 선택 중(pending) */
 .ts-cell.selected { background: var(--rust); cursor: pointer; }
 .ts-cell.selected:hover { background: var(--rust-dark); transform: scale(0.96); }
 .ts-cell.selected::after { content: '✓'; color: white; font-weight: 900; }
-
-/* 내 확정 예약 */
 .ts-cell.my-res { background: linear-gradient(135deg,#FEF0D8,#FDDBA8); cursor: default; }
 .ts-cell.my-res::after { content: '★'; color: var(--gold); }
-
-/* 타인 예약 툴팁 */
-.ts-cell.blocked .reserved-by {
-  display: none;
-  position: absolute;
-  bottom: calc(100% + 6px);
-  left: 50%; transform: translateX(-50%);
-  background: var(--rust-dark); color: white;
-  font-size: 0.65rem; padding: 4px 10px; border-radius: 6px;
-  white-space: nowrap; pointer-events: none; z-index: 10;
-}
-.ts-cell.blocked:hover .reserved-by { display: block; }
 
 .chip-section { background: var(--white); border: 1.5px solid var(--cream-dark); border-radius: 14px; padding: 18px 22px; margin-bottom: 20px; }
 .chip-section-title { font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-light); margin-bottom: 12px; }
@@ -357,7 +335,6 @@ main { max-width: 1060px; margin: 0 auto; padding: 28px 20px 80px; }
   </div>
 </main>
 
-<!-- MODALS -->
 <div class="overlay" id="successOverlay">
   <div class="modal">
     <div class="modal-icon">🎤</div>
@@ -404,7 +381,7 @@ main { max-width: 1060px; margin: 0 auto; padding: 28px 20px 80px; }
 // ═══════════════════════════════════════
 //  CONFIG
 // ═══════════════════════════════════════
-const API = 'https://script.google.com/macros/s/AKfycbzMvdeJG4rfQxLFtDCTgy9vkpgEivScTV_AKfG9F0usMyCCXaHEV23NN4bS4iajNq1O/exec';
+const API = 'https://script.google.com/macros/s/AKfycbzR_TfMAjGS6W9_srzadQIDR7h7A6ku-X62Y5XwMR33Mnbpt5MIkyrrRXSPpK2lzT1l/exec';
 
 async function apiCall(params) {
   const qs  = new URLSearchParams(params).toString();
@@ -417,7 +394,6 @@ const DAYS   = ['MON','TUE','WED','THU','FRI','SAT'];
 const DAY_KO = { MON:'월요일', TUE:'화요일', WED:'수요일', THU:'목요일', FRI:'금요일', SAT:'토요일' };
 const DAY_JS = { MON:1, TUE:2, WED:3, THU:4, FRI:5, SAT:6 };
 
-// 기본 스케줄 (이미지 기준 O=1, X=0)
 const BASE = {
   room3: {
     MON:[1,0,0,0,0,0,0,0,0,0], TUE:[1,1,1,0,0,0,0,0,0,0],
@@ -434,8 +410,8 @@ const BASE = {
 // ═══════════════════════════════════════
 //  STATE
 // ═══════════════════════════════════════
-let reservations = [];   // Google Sheets에서 가져온 확정 예약
-let pending      = [];   // 현재 선택 중인 슬롯 (미확정)
+let reservations = [];
+let pending      = [];
 let currentRoom  = 'room3';
 let currentDay   = 'MON';
 let editId       = null;
@@ -448,8 +424,14 @@ async function loadReservations(manual = false) {
   setSyncStatus('syncing');
   try {
     const json = await apiCall({});
-    // 빈 행, id 없는 행 필터링 + 모든 필드 trim
     reservations = (json.data || []).filter(r => r.id && r.id.trim() !== '');
+
+    // 혹시 time 값이 Date 문자열로 오는 경우 "HH:MM" 으로 정규화
+    reservations = reservations.map(r => ({
+      ...r,
+      time: normalizeTime(r.time)
+    }));
+
     setSyncStatus('ok');
   } catch(e) {
     setSyncStatus('err');
@@ -458,9 +440,31 @@ async function loadReservations(manual = false) {
   renderAll();
 }
 
-async function apiAdd(row)            { return apiCall({ action:'add',    ...row }); }
-async function apiDelete(id)          { return apiCall({ action:'delete', id }); }
-async function apiUpdate(id, time)    { return apiCall({ action:'update', id, time }); }
+// time 값 정규화: "14:00:00", Date 문자열 등 → "14:00"
+function normalizeTime(val) {
+  if (!val) return '';
+  const s = String(val).trim();
+
+  // 이미 "HH:MM" 형식이면 그대로
+  if (/^\d{1,2}:\d{2}$/.test(s)) return s.padStart(5, '0');
+
+  // "HH:MM:SS" 형식
+  if (/^\d{1,2}:\d{2}:\d{2}/.test(s)) return s.slice(0, 5);
+
+  // Date 문자열 (예: "Sat Dec 30 1899 14:00:00 GMT+...")
+  const d = new Date(s);
+  if (!isNaN(d.getTime())) {
+    const hh = String(d.getHours()).padStart(2, '0');
+    const mm = String(d.getMinutes()).padStart(2, '0');
+    return `${hh}:${mm}`;
+  }
+
+  return s;
+}
+
+async function apiAdd(row)         { return apiCall({ action:'add',    ...row }); }
+async function apiDelete(id)       { return apiCall({ action:'delete', id }); }
+async function apiUpdate(id, time) { return apiCall({ action:'update', id, time }); }
 
 function setSyncStatus(state) {
   const dot  = document.getElementById('syncDot');
@@ -471,9 +475,8 @@ function setSyncStatus(state) {
 }
 
 // ═══════════════════════════════════════
-//  슬롯 상태 판별 (핵심 로직)
+//  슬롯 상태 판별
 // ═══════════════════════════════════════
-// 특정 룸+요일+시간에 이미 예약이 있는지 (내 예약 제외 옵션)
 function isSlotTaken(room, day, time, excludeId = null) {
   return reservations.some(r =>
     r.room === room &&
@@ -483,7 +486,6 @@ function isSlotTaken(room, day, time, excludeId = null) {
   );
 }
 
-// 내 예약인지
 function isMySlot(nick, room, day, time) {
   if (!nick) return false;
   return reservations.some(r =>
@@ -566,51 +568,30 @@ function renderGrid() {
   container.innerHTML = '';
 
   TIMES.forEach((t, ti) => {
-    const baseOk  = BASE[currentRoom][currentDay][ti] === 1;
-    const taken   = isSlotTaken(currentRoom, currentDay, t);        // 누군가 예약함
-    const isMine  = isMySlot(nick, currentRoom, currentDay, t);     // 내가 예약함
-    const isPend  = pending.some(s => s.room===currentRoom && s.day===currentDay && s.time===t);
+    const baseOk = BASE[currentRoom][currentDay][ti] === 1;
+    const taken  = isSlotTaken(currentRoom, currentDay, t);
+    const isMine = isMySlot(nick, currentRoom, currentDay, t);
+    const isPend = pending.some(s => s.room===currentRoom && s.day===currentDay && s.time===t);
 
     const row  = document.createElement('div'); row.className = 'time-slot-row';
     const lbl  = document.createElement('div'); lbl.className = 'ts-label'; lbl.textContent = t;
     const cell = document.createElement('div'); cell.className = 'ts-cell';
 
     if (isPend) {
-      // 현재 내가 선택 중
       cell.classList.add('selected');
       cell.onclick = () => deselect(currentRoom, currentDay, t);
-      cell.title = '클릭하면 선택 취소';
-
     } else if (isMine) {
-      // 내가 확정 예약한 슬롯
       cell.classList.add('my-res');
       cell.title = '내 예약';
-
     } else if (!isOpen) {
-      // 예약 창 닫힘
       cell.classList.add('locked');
       cell.title = '예약 창이 닫혀있습니다 (전날 12:00~20:00에 예약 가능)';
-
-    } else if (!baseOk) {
-      // 기본 스케줄상 불가
+    } else if (!baseOk || taken) {
       cell.classList.add('blocked');
-      cell.title = '예약 불가 시간';
-
-    } else if (taken) {
-      // 다른 사람이 이미 예약한 슬롯 → 예약 불가
-      cell.classList.add('blocked');
-      cell.title = '이미 예약된 시간입니다';
-      // 호버 시 "예약완료" 툴팁
-      const tip = document.createElement('span');
-      tip.className = 'reserved-by';
-      tip.textContent = '예약 마감';
-      cell.appendChild(tip);
-
+      cell.title = taken ? '이미 예약된 시간입니다' : '예약 불가 시간';
     } else {
-      // 예약 가능
       cell.classList.add('avail');
       cell.onclick = () => selectSlot(currentRoom, currentDay, t);
-      cell.title = '클릭하여 선택';
     }
 
     row.appendChild(lbl);
@@ -621,10 +602,7 @@ function renderGrid() {
 
 function renderChips() {
   const list = document.getElementById('chipList');
-  if (!pending.length) {
-    list.innerHTML = '<div class="chip-empty">예약할 시간을 선택하세요</div>';
-    return;
-  }
+  if (!pending.length) { list.innerHTML = '<div class="chip-empty">예약할 시간을 선택하세요</div>'; return; }
   list.innerHTML = pending.map(s =>
     `<div class="chip">${s.room.toUpperCase()} · ${s.day} ${s.time}
       <span class="chip-x" onclick="deselect('${s.room}','${s.day}','${s.time}')">×</span></div>`
@@ -652,15 +630,11 @@ function selectSlot(room, day, time) {
     showAlert('⚠️', '닉네임 필요', '예약 전에 닉네임을 입력해주세요.');
     return;
   }
-
-  // 같은 룸+요일+시간에 이미 예약이 있는지 실시간 재확인
   if (isSlotTaken(room, day, time)) {
     showAlert('❌', '예약 마감', '방금 다른 분이 예약한 시간입니다.<br>새로고침 후 다시 확인해주세요.');
-    loadReservations(); // 자동 새로고침
+    loadReservations();
     return;
   }
-
-  // 하루 2타임 제한 (룸 무관, 해당 요일 기준)
   const dayBooked  = reservations.filter(r => r.nick===nick && r.day===day).length;
   const dayPending = pending.filter(s => s.day===day).length;
   if (dayBooked + dayPending >= 2) {
@@ -668,7 +642,6 @@ function selectSlot(room, day, time) {
       `<b>${DAY_KO[day]}</b>에 이미 2타임이 선택/예약되었습니다.<br>1인당 하루 최대 2타임까지 가능합니다.`);
     return;
   }
-
   pending.push({ room, day, time });
   renderAll();
 }
@@ -696,7 +669,6 @@ async function submitBooking() {
   const nick = document.getElementById('bookNick').value.trim();
   if (!nick || !pending.length) return;
 
-  // 최종 유효성 검사
   for (const s of pending) {
     const ti = TIMES.indexOf(s.time);
     if (!BASE[s.room][s.day][ti]) {
@@ -705,35 +677,26 @@ async function submitBooking() {
     if (isSlotTaken(s.room, s.day, s.time)) {
       showAlert('❌', '예약 마감',
         `<b>${s.room.toUpperCase()} · ${DAY_KO[s.day]} ${s.time}</b>는 이미 예약된 시간입니다.<br>새로고침 후 다시 선택해주세요.`);
-      await loadReservations();
-      return;
+      await loadReservations(); return;
     }
   }
 
   const btn = document.getElementById('submitBtn');
-  btn.disabled = true;
-  btn.textContent = '저장 중...';
+  btn.disabled = true; btn.textContent = '저장 중...';
 
   const confirmed = pending.map(s => ({
     id:   `${Date.now()}_${Math.random().toString(36).slice(2,7)}`,
-    nick,
-    room: s.room,
-    day:  s.day,
-    time: s.time,
+    nick, room: s.room, day: s.day, time: s.time,
     at:   new Date().toISOString()
   }));
 
   try {
-    for (const c of confirmed) {
-      await apiAdd(c);
-    }
-    await loadReservations(); // 시트에서 최신 데이터 다시 로드
+    for (const c of confirmed) await apiAdd(c);
+    await loadReservations();
 
     document.getElementById('successBody').innerHTML   = `<b>${nick}</b>님의 예약이 확정되었습니다!`;
     document.getElementById('successDetail').innerHTML =
-      confirmed.map(c =>
-        `📍 <b>${c.room.toUpperCase()}</b> · ${DAY_KO[c.day]} ${c.time} ~ ${nextHour(c.time)}`
-      ).join('<br>');
+      confirmed.map(c => `📍 <b>${c.room.toUpperCase()}</b> · ${DAY_KO[c.day]} ${c.time} ~ ${nextHour(c.time)}`).join('<br>');
     document.getElementById('successOverlay').classList.add('show');
     pending = [];
     renderAll();
@@ -741,8 +704,7 @@ async function submitBooking() {
     showAlert('❌', '저장 실패', '네트워크 오류가 발생했습니다.<br>다시 시도해주세요.');
   }
 
-  btn.disabled = false;
-  btn.textContent = '예약 확정하기';
+  btn.disabled = false; btn.textContent = '예약 확정하기';
   updateSubmit();
 }
 
@@ -786,7 +748,7 @@ function searchReservations() {
   }).join('');
 }
 
-// ── CANCEL ──
+// CANCEL
 let pendingCancelId = null;
 function openCancel(id, nick) {
   const r = reservations.find(x => x.id===id); if (!r) return;
@@ -803,15 +765,13 @@ function openCancel(id, nick) {
 async function confirmCancel(nick) {
   try {
     await apiDelete(pendingCancelId);
-    await loadReservations(); // 취소 후 즉시 반영
+    await loadReservations();
     closeModal('cancelOverlay');
-    searchReservations();     // 조회 목록도 갱신
-  } catch(e) {
-    showAlert('❌', '오류', '취소 중 오류가 발생했습니다.');
-  }
+    searchReservations();
+  } catch(e) { showAlert('❌', '오류', '취소 중 오류가 발생했습니다.'); }
 }
 
-// ── EDIT ──
+// EDIT
 function openEdit(id, nick) {
   const r = reservations.find(x => x.id===id); if (!r) return;
   if (!isWindowOpen(r.day)) {
@@ -828,15 +788,13 @@ function openEdit(id, nick) {
   const grid = document.getElementById('editGrid'); grid.innerHTML = '';
   TIMES.forEach((t, ti) => {
     const baseOk = BASE[r.room][r.day][ti] === 1;
-    // 변경 시: 현재 내 예약 슬롯(id 제외)을 제외하고 taken 판단
     const taken  = isSlotTaken(r.room, r.day, t, id);
     const isCur  = t === r.time;
     const btn    = document.createElement('button');
-    btn.className  = 'edit-slot';
-    btn.textContent = t;
-    if      (isCur)            { btn.classList.add('current'); btn.disabled = true; btn.title='현재 예약'; }
-    else if (!baseOk || taken) { btn.classList.add('blocked'); btn.disabled = true; btn.title=taken?'이미 예약된 시간':'예약 불가 시간'; }
-    else                       { btn.classList.add('avail');   btn.onclick  = () => pickEditTime(t, grid, btn); }
+    btn.className = 'edit-slot'; btn.textContent = t;
+    if      (isCur)            { btn.classList.add('current'); btn.disabled=true; }
+    else if (!baseOk || taken) { btn.classList.add('blocked'); btn.disabled=true; }
+    else                       { btn.classList.add('avail');   btn.onclick=()=>pickEditTime(t,grid,btn); }
     grid.appendChild(btn);
   });
   document.getElementById('editOverlay').classList.add('show');
@@ -847,19 +805,15 @@ function pickEditTime(t, grid, btnEl) {
   grid.querySelectorAll('.edit-slot').forEach(b => {
     if (b.classList.contains('pick')) { b.classList.remove('pick'); b.classList.add('avail'); }
   });
-  btnEl.classList.remove('avail');
-  btnEl.classList.add('pick');
+  btnEl.classList.remove('avail'); btnEl.classList.add('pick');
   document.getElementById('editConfirmBtn').disabled = false;
 }
 
 async function confirmEdit(orig) {
   if (!editNewTime) return;
-  // 변경하려는 시간도 선점됐는지 재확인 (내 예약 제외)
   if (isSlotTaken(orig.room, orig.day, editNewTime, editId)) {
     showAlert('❌','변경 불가','방금 다른 분이 해당 시간을 예약했습니다.<br>다른 시간을 선택해주세요.');
-    await loadReservations();
-    closeModal('editOverlay');
-    return;
+    await loadReservations(); closeModal('editOverlay'); return;
   }
   try {
     await apiUpdate(editId, editNewTime);
@@ -868,9 +822,7 @@ async function confirmEdit(orig) {
     searchReservations();
     showAlert('✅','변경 완료',
       `<b>${orig.time}</b> → <b>${editNewTime} ~ ${nextHour(editNewTime)}</b>로 변경되었습니다.`);
-  } catch(e) {
-    showAlert('❌', '오류', '변경 중 오류가 발생했습니다.');
-  }
+  } catch(e) { showAlert('❌', '오류', '변경 중 오류가 발생했습니다.'); }
 }
 
 // ═══════════════════════════════════════
