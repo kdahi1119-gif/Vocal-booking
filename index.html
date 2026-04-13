@@ -55,29 +55,24 @@ header { background: var(--rust-dark); position: relative; overflow: hidden; }
 
 /* LOADING OVERLAY */
 .loading-overlay {
-  position: fixed; inset: 0; background: rgba(107,45,31,0.85);
+  position: fixed; inset: 0; background: rgba(107,45,31,0.88);
   z-index: 999; display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 16px; backdrop-filter: blur(4px);
+  gap: 16px; backdrop-filter: blur(4px); transition: opacity 0.4s;
 }
 .loading-overlay.hide { display: none; }
-.spinner {
-  width: 44px; height: 44px;
-  border: 4px solid rgba(255,255,255,0.2);
-  border-top-color: white;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
+.spinner { width: 44px; height: 44px; border: 4px solid rgba(255,255,255,0.2); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .loading-text { color: white; font-size: 0.85rem; letter-spacing: 1px; }
 
-/* SYNC BADGE */
+/* SYNC BAR */
 .sync-bar {
   background: var(--cream-dark); border-bottom: 1px solid var(--cream-mid);
   padding: 7px 20px; display: flex; align-items: center; justify-content: space-between;
   font-size: 0.72rem; color: var(--text-light); flex-wrap: wrap; gap: 8px;
 }
 .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); display: inline-block; margin-right: 5px; animation: pulse 2s infinite; }
-.sync-dot.err { background: var(--rust-light); animation: none; }
+.sync-dot.err { background: #e05555; animation: none; }
+.sync-dot.loading { background: var(--gold); }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 .refresh-btn {
   padding: 4px 12px; border-radius: 6px; border: 1px solid var(--cream-mid);
@@ -268,7 +263,6 @@ main { max-width: 1060px; margin: 0 auto; padding: 28px 20px 80px; }
 </head>
 <body>
 
-<!-- LOADING -->
 <div class="loading-overlay" id="loadingOverlay">
   <div class="spinner"></div>
   <div class="loading-text">예약 현황 불러오는 중...</div>
@@ -294,10 +288,9 @@ main { max-width: 1060px; margin: 0 auto; padding: 28px 20px 80px; }
   </div>
 </header>
 
-<!-- SYNC BAR -->
 <div class="sync-bar">
-  <div><span class="sync-dot" id="syncDot"></span><span id="syncText">실시간 연동 중</span></div>
-  <button class="refresh-btn" onclick="loadReservations()">↻ 새로고침</button>
+  <div><span class="sync-dot" id="syncDot"></span><span id="syncText">연결 중...</span></div>
+  <button class="refresh-btn" onclick="loadReservations(true)">↻ 새로고침</button>
 </div>
 
 <main>
@@ -403,9 +396,18 @@ main { max-width: 1060px; margin: 0 auto; padding: 28px 20px 80px; }
 
 <script>
 // ═══════════════════════════════════════
-//  CONFIG
+//  CONFIG — GET-only API (CORS 우회)
 // ═══════════════════════════════════════
-const API = 'https://script.google.com/macros/s/AKfycbx5Aor8MoM8eGMsyorkZba3FI2WB7LDd3Wndgqmav3SUfleQoFSmiQfpCSyuItOqiE/exec';
+const API = 'https://script.google.com/macros/s/AKfycbzMVGsWCA2v1XP1_TlDOQhfz5kftSfFO2cZILQzvEQwkhbc8dE6Fa35I3vRluhFwoCu/exec';
+
+// 모든 요청을 GET + query string으로 처리 (CORS 문제 없음)
+async function apiCall(params) {
+  const qs = new URLSearchParams(params).toString();
+  const url = `${API}?${qs}`;
+  // JSONP 방식으로 호출 (Apps Script GET은 항상 허용)
+  const res = await fetch(url);
+  return res.json();
+}
 
 const TIMES  = ['12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00'];
 const DAYS   = ['MON','TUE','WED','THU','FRI','SAT'];
@@ -428,54 +430,60 @@ const BASE = {
 // ═══════════════════════════════════════
 //  STATE
 // ═══════════════════════════════════════
-let reservations = [];   // from Google Sheets
-let pending      = [];   // locally selected, not yet submitted
+let reservations = [];
+let pending      = [];
 let currentRoom  = 'room3';
 let currentDay   = 'MON';
 let editId       = null;
 let editNewTime  = null;
 
 // ═══════════════════════════════════════
-//  API
+//  API CALLS
 // ═══════════════════════════════════════
-async function apiGet() {
-  const res = await fetch(API);
-  const json = await res.json();
-  return json.data || [];
-}
-
-async function apiPost(body) {
-  await fetch(API, {
-    method: 'POST',
-    body: JSON.stringify(body)
-  });
-}
-
-async function loadReservations() {
+async function loadReservations(manual = false) {
   setSyncStatus('loading');
   try {
-    reservations = await apiGet();
+    const json = await apiCall({});
+    reservations = (json.data || []).filter(r => r.id); // 빈 행 제거
     setSyncStatus('ok');
   } catch(e) {
     setSyncStatus('err');
+    if (manual) showAlert('❌', '연결 오류', '구글 시트에 연결할 수 없습니다.<br>잠시 후 다시 시도해주세요.');
   }
   renderAll();
+}
+
+async function apiAdd(row) {
+  return apiCall({ action:'add', ...row });
+}
+async function apiDelete(id) {
+  return apiCall({ action:'delete', id });
+}
+async function apiUpdate(id, time) {
+  return apiCall({ action:'update', id, time });
 }
 
 function setSyncStatus(state) {
   const dot  = document.getElementById('syncDot');
   const text = document.getElementById('syncText');
-  if (state === 'loading') { dot.className='sync-dot'; text.textContent='동기화 중...'; }
-  else if (state === 'ok') { dot.className='sync-dot'; text.textContent=`마지막 동기화: ${fmtTime(new Date())}`; }
-  else { dot.className='sync-dot err'; text.textContent='연결 오류 — 새로고침 해주세요'; }
+  if (state === 'loading') {
+    dot.className = 'sync-dot loading';
+    text.textContent = '동기화 중...';
+  } else if (state === 'ok') {
+    dot.className = 'sync-dot';
+    text.textContent = `마지막 동기화: ${fmtTime(new Date())}`;
+  } else {
+    dot.className = 'sync-dot err';
+    text.textContent = '연결 오류 — 새로고침을 눌러주세요';
+  }
 }
 
 // ═══════════════════════════════════════
 //  TIME UTILS
 // ═══════════════════════════════════════
-function getNow() { return new Date(); }
-function nextHour(t) { return String(parseInt(t)+1).padStart(2,'0')+':00'; }
-function fmtTime(d) { return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; }
+function getNow()     { return new Date(); }
+function nextHour(t)  { return String(parseInt(t)+1).padStart(2,'0')+':00'; }
+function fmtTime(d)   { return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; }
 
 function isWindowOpen(dayStr) {
   const n = getNow();
@@ -488,7 +496,7 @@ function isWindowOpen(dayStr) {
 function bookableDays() { return DAYS.filter(isWindowOpen); }
 
 function formatNow() {
-  const n = getNow(), p = x=>String(x).padStart(2,'0');
+  const n = getNow(), p = x => String(x).padStart(2,'0');
   const wd = ['일','월','화','수','목','금','토'][n.getDay()];
   return `${n.getFullYear()}.${p(n.getMonth()+1)}.${p(n.getDate())} (${wd}) ${p(n.getHours())}:${p(n.getMinutes())}`;
 }
@@ -518,10 +526,12 @@ function renderAll() {
 function renderDayTabs() {
   const open = bookableDays();
   document.getElementById('bookableInfo').textContent =
-    open.length ? ` — 현재 예약 가능: ${open.map(d=>DAY_KO[d]).join(', ')}` : ' — 현재 예약 창이 열린 날짜가 없습니다.';
+    open.length
+      ? ` — 현재 예약 가능: ${open.map(d => DAY_KO[d]).join(', ')}`
+      : ' — 현재 예약 창이 열린 날짜가 없습니다.';
 
   document.getElementById('dayTabs').innerHTML = DAYS.map(d => {
-    const isOpen = open.includes(d), isCur = d===currentDay;
+    const isOpen = open.includes(d), isCur = d === currentDay;
     return `<button class="day-tab ${isOpen?'bookable':''} ${isCur?'active':''}" onclick="selectDay('${d}')">
       ${d}<br><small style="font-size:0.62rem;font-weight:400;opacity:0.75">${DAY_KO[d][0]}</small>
       ${isOpen ? '<div class="open-dot"></div>' : ''}
@@ -544,15 +554,15 @@ function renderGrid() {
     const isMine = nick && reservations.some(r => r.room===currentRoom && r.day===currentDay && r.time===t && r.nick===nick);
     const isPend = pending.some(s => s.room===currentRoom && s.day===currentDay && s.time===t);
 
-    const row  = document.createElement('div'); row.className='time-slot-row';
-    const lbl  = document.createElement('div'); lbl.className='ts-label'; lbl.textContent=t;
-    const cell = document.createElement('div'); cell.className='ts-cell';
+    const row  = document.createElement('div'); row.className = 'time-slot-row';
+    const lbl  = document.createElement('div'); lbl.className = 'ts-label'; lbl.textContent = t;
+    const cell = document.createElement('div'); cell.className = 'ts-cell';
 
-    if      (isPend)             { cell.classList.add('selected'); cell.onclick=()=>deselect(currentRoom,currentDay,t); }
-    else if (isMine)             { cell.classList.add('my-res'); cell.title='내 예약'; }
-    else if (!isOpen)            { cell.classList.add('locked'); cell.title='예약 창이 닫혀있습니다'; }
-    else if (!baseOk || taken)   { cell.classList.add('blocked'); }
-    else                         { cell.classList.add('avail'); cell.onclick=()=>selectSlot(currentRoom,currentDay,t); }
+    if      (isPend)           { cell.classList.add('selected'); cell.onclick = () => deselect(currentRoom, currentDay, t); }
+    else if (isMine)           { cell.classList.add('my-res');   cell.title = '내 예약'; }
+    else if (!isOpen)          { cell.classList.add('locked');   cell.title = '예약 창이 닫혀있습니다'; }
+    else if (!baseOk || taken) { cell.classList.add('blocked'); }
+    else                       { cell.classList.add('avail');    cell.onclick = () => selectSlot(currentRoom, currentDay, t); }
 
     row.appendChild(lbl); row.appendChild(cell); container.appendChild(row);
   });
@@ -560,7 +570,7 @@ function renderGrid() {
 
 function renderChips() {
   const list = document.getElementById('chipList');
-  if (!pending.length) { list.innerHTML='<div class="chip-empty">예약할 시간을 선택하세요</div>'; return; }
+  if (!pending.length) { list.innerHTML = '<div class="chip-empty">예약할 시간을 선택하세요</div>'; return; }
   list.innerHTML = pending.map(s =>
     `<div class="chip">${s.room.toUpperCase()} · ${s.day} ${s.time}
       <span class="chip-x" onclick="deselect('${s.room}','${s.day}','${s.time}')">×</span></div>`
@@ -568,12 +578,12 @@ function renderChips() {
 }
 
 // ═══════════════════════════════════════
-//  BOOKING INTERACTIONS
+//  INTERACTIONS
 // ═══════════════════════════════════════
-function selectDay(d) { currentDay=d; renderAll(); }
+function selectDay(d) { currentDay = d; renderAll(); }
 
 function switchRoom(r) {
-  currentRoom=r;
+  currentRoom = r;
   document.getElementById('rtRoom3').classList.toggle('active', r==='room3');
   document.getElementById('rtRoom4').classList.toggle('active', r==='room4');
   renderAll();
@@ -584,34 +594,34 @@ function selectSlot(room, day, time) {
   if (!nick) {
     const inp = document.getElementById('bookNick');
     inp.classList.add('error'); inp.focus();
-    setTimeout(()=>inp.classList.remove('error'), 600);
-    showAlert('⚠️','닉네임 필요','예약 전에 닉네임을 입력해주세요.');
+    setTimeout(() => inp.classList.remove('error'), 600);
+    showAlert('⚠️', '닉네임 필요', '예약 전에 닉네임을 입력해주세요.');
     return;
   }
-  const dayBooked  = reservations.filter(r=>r.nick===nick&&r.day===day).length;
-  const dayPending = pending.filter(s=>s.day===day).length;
-  if (dayBooked+dayPending >= 2) {
-    showAlert('⚠️','하루 2타임 초과',`<b>${DAY_KO[day]}</b>에 이미 2타임이 선택/예약되었습니다.<br>1인당 하루 최대 2타임까지 가능합니다.`);
+  const dayBooked  = reservations.filter(r => r.nick===nick && r.day===day).length;
+  const dayPending = pending.filter(s => s.day===day).length;
+  if (dayBooked + dayPending >= 2) {
+    showAlert('⚠️', '하루 2타임 초과', `<b>${DAY_KO[day]}</b>에 이미 2타임이 선택/예약되었습니다.<br>1인당 하루 최대 2타임까지 가능합니다.`);
     return;
   }
-  pending.push({room,day,time});
+  pending.push({ room, day, time });
   renderAll();
 }
 
 function deselect(room, day, time) {
-  pending = pending.filter(s=>!(s.room===room&&s.day===day&&s.time===time));
+  pending = pending.filter(s => !(s.room===room && s.day===day && s.time===time));
   renderAll();
 }
 
 function updateSubmit() {
   const nick = document.getElementById('bookNick').value.trim();
   document.getElementById('submitBtn').disabled = !nick || !pending.length;
-  const days={};
-  pending.forEach(s=>{days[s.day]=(days[s.day]||0)+1;});
+  const days = {};
+  pending.forEach(s => { days[s.day] = (days[s.day]||0)+1; });
   const max = pending.length ? Math.max(...Object.values(days)) : 0;
   const pill = document.getElementById('quotaPill');
   pill.textContent = `선택 ${pending.length} / 2`;
-  pill.className = 'quota-pill'+(max>=2?' full':max===1?' warn':'');
+  pill.className = 'quota-pill' + (max>=2?' full': max===1?' warn':'');
 }
 
 // ═══════════════════════════════════════
@@ -621,41 +631,43 @@ async function submitBooking() {
   const nick = document.getElementById('bookNick').value.trim();
   if (!nick || !pending.length) return;
 
-  // Validate
   for (const s of pending) {
     const ti = TIMES.indexOf(s.time);
     if (!BASE[s.room][s.day][ti]) { showAlert('❌','예약 불가','선택한 시간은 예약 불가 시간입니다.'); return; }
-    if (reservations.some(r=>r.room===s.room&&r.day===s.day&&r.time===s.time)) {
-      showAlert('❌','중복 예약','선택한 시간에 이미 예약이 있습니다. 새로고침 후 다시 선택해주세요.'); return;
+    if (reservations.some(r => r.room===s.room && r.day===s.day && r.time===s.time)) {
+      showAlert('❌','중복 예약','선택한 시간에 이미 예약이 있습니다.<br>새로고침 후 다시 시도해주세요.'); return;
     }
   }
 
-  document.getElementById('submitBtn').disabled = true;
-  document.getElementById('submitBtn').textContent = '저장 중...';
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = '저장 중...';
 
   const confirmed = pending.map(s => ({
-    id: `${Date.now()}_${Math.random().toString(36).slice(2)}`,
-    nick, ...s, at: new Date().toISOString()
+    id:   `${Date.now()}_${Math.random().toString(36).slice(2,7)}`,
+    nick, room: s.room, day: s.day, time: s.time,
+    at:   new Date().toISOString()
   }));
 
   try {
     for (const c of confirmed) {
-      await apiPost({ action:'add', ...c });
+      await apiAdd(c);
     }
     await loadReservations();
 
-    document.getElementById('successBody').innerHTML = `<b>${nick}</b>님의 예약이 확정되었습니다!`;
+    document.getElementById('successBody').innerHTML   = `<b>${nick}</b>님의 예약이 확정되었습니다!`;
     document.getElementById('successDetail').innerHTML =
-      confirmed.map(c=>`📍 <b>${c.room.toUpperCase()}</b> · ${DAY_KO[c.day]} ${c.time} ~ ${nextHour(c.time)}`).join('<br>');
+      confirmed.map(c => `📍 <b>${c.room.toUpperCase()}</b> · ${DAY_KO[c.day]} ${c.time} ~ ${nextHour(c.time)}`).join('<br>');
     document.getElementById('successOverlay').classList.add('show');
     pending = [];
+    renderAll();
   } catch(e) {
-    showAlert('❌','저장 실패','네트워크 오류가 발생했습니다. 다시 시도해주세요.');
+    showAlert('❌', '저장 실패', '네트워크 오류가 발생했습니다.<br>다시 시도해주세요.');
   }
 
-  document.getElementById('submitBtn').disabled = false;
-  document.getElementById('submitBtn').textContent = '예약 확정하기';
-  renderAll();
+  btn.disabled = false;
+  btn.textContent = '예약 확정하기';
+  updateSubmit();
 }
 
 // ═══════════════════════════════════════
@@ -665,17 +677,18 @@ function searchReservations() {
   const nick = document.getElementById('searchNick').value.trim();
   if (!nick) { showAlert('⚠️','닉네임 필요','닉네임을 입력해주세요.'); return; }
 
-  const mine = reservations.filter(r=>r.nick===nick);
+  const mine = reservations.filter(r => r.nick === nick);
   const container = document.getElementById('myResList');
 
   if (!mine.length) {
-    container.innerHTML=`<div class="res-empty"><div class="res-empty-icon">🔍</div>
+    container.innerHTML = `<div class="res-empty">
+      <div class="res-empty-icon">🔍</div>
       <div class="res-empty-text"><b>${nick}</b>님의 예약 내역이 없습니다.</div></div>`;
     return;
   }
 
-  const order={MON:0,TUE:1,WED:2,THU:3,FRI:4,SAT:5};
-  mine.sort((a,b)=>order[a.day]-order[b.day]||a.time.localeCompare(b.time));
+  const order = { MON:0, TUE:1, WED:2, THU:3, FRI:4, SAT:5 };
+  mine.sort((a,b) => order[a.day]-order[b.day] || a.time.localeCompare(b.time));
 
   container.innerHTML = mine.map(r => {
     const canModify = isWindowOpen(r.day);
@@ -696,88 +709,102 @@ function searchReservations() {
 }
 
 // CANCEL
-let pendingCancelId=null;
+let pendingCancelId = null;
 function openCancel(id, nick) {
-  const r = reservations.find(x=>x.id===id); if(!r) return;
+  const r = reservations.find(x => x.id===id); if (!r) return;
   pendingCancelId = id;
-  document.getElementById('cancelBody').innerHTML=`<b>${nick}</b>님의 예약을 취소하시겠습니까?<br><small style="color:var(--text-light)">취소는 예약 창 마감 이후에도 가능합니다.</small>`;
-  document.getElementById('cancelDetail').innerHTML=`📍 <b>${r.room.toUpperCase()}</b> · ${DAY_KO[r.day]}<br>🕐 ${r.time} ~ ${nextHour(r.time)}`;
-  document.getElementById('cancelConfirmBtn').onclick = ()=>confirmCancel(nick);
+  document.getElementById('cancelBody').innerHTML =
+    `<b>${nick}</b>님의 예약을 취소하시겠습니까?<br><small style="color:var(--text-light)">취소는 예약 창 마감 이후에도 가능합니다.</small>`;
+  document.getElementById('cancelDetail').innerHTML =
+    `📍 <b>${r.room.toUpperCase()}</b> · ${DAY_KO[r.day]}<br>🕐 ${r.time} ~ ${nextHour(r.time)}`;
+  document.getElementById('cancelConfirmBtn').onclick = () => confirmCancel(nick);
   document.getElementById('cancelOverlay').classList.add('show');
 }
+
 async function confirmCancel(nick) {
   try {
-    await apiPost({ action:'delete', id: pendingCancelId });
+    await apiDelete(pendingCancelId);
     await loadReservations();
     closeModal('cancelOverlay');
     searchReservations();
-  } catch(e) { showAlert('❌','오류','취소 중 오류가 발생했습니다.'); }
+  } catch(e) {
+    showAlert('❌', '오류', '취소 중 오류가 발생했습니다.');
+  }
 }
 
 // EDIT
 function openEdit(id, nick) {
-  const r = reservations.find(x=>x.id===id); if(!r) return;
+  const r = reservations.find(x => x.id===id); if (!r) return;
   if (!isWindowOpen(r.day)) {
-    showAlert('🔒','변경 불가',`<b>${DAY_KO[r.day]}</b>의 예약 창이 닫혀있습니다.<br>변경은 해당 날짜 <b>전날 12:00~20:00</b> 사이에만 가능합니다.`);
+    showAlert('🔒','변경 불가',`<b>${DAY_KO[r.day]}</b>의 예약 창이 닫혀있습니다.<br>전날 12:00~20:00 사이에만 변경 가능합니다.`);
     return;
   }
-  editId=id; editNewTime=null;
-  document.getElementById('editBody').innerHTML=`<b>${r.room.toUpperCase()} · ${DAY_KO[r.day]}</b><br>변경할 시간을 선택하세요`;
-  document.getElementById('editConfirmBtn').disabled=true;
-  document.getElementById('editConfirmBtn').onclick=()=>confirmEdit(r);
+  editId = id; editNewTime = null;
+  document.getElementById('editBody').innerHTML =
+    `<b>${r.room.toUpperCase()} · ${DAY_KO[r.day]}</b><br>변경할 시간을 선택하세요`;
+  document.getElementById('editConfirmBtn').disabled = true;
+  document.getElementById('editConfirmBtn').onclick  = () => confirmEdit(r);
 
-  const grid=document.getElementById('editGrid'); grid.innerHTML='';
-  TIMES.forEach((t,ti)=>{
-    const baseOk=BASE[r.room][r.day][ti]===1;
-    const taken=reservations.some(x=>x.room===r.room&&x.day===r.day&&x.time===t&&x.id!==id);
-    const isCur=t===r.time;
-    const btn=document.createElement('button');
-    btn.className='edit-slot'; btn.textContent=t;
-    if (isCur)            { btn.classList.add('current'); btn.disabled=true; }
-    else if(!baseOk||taken){ btn.classList.add('blocked'); btn.disabled=true; }
-    else                  { btn.classList.add('avail'); btn.onclick=()=>pickEditTime(t,grid,btn); }
+  const grid = document.getElementById('editGrid'); grid.innerHTML = '';
+  TIMES.forEach((t, ti) => {
+    const baseOk = BASE[r.room][r.day][ti] === 1;
+    const taken  = reservations.some(x => x.room===r.room && x.day===r.day && x.time===t && x.id!==id);
+    const isCur  = t === r.time;
+    const btn    = document.createElement('button');
+    btn.className = 'edit-slot'; btn.textContent = t;
+    if      (isCur)            { btn.classList.add('current');  btn.disabled = true; }
+    else if (!baseOk || taken) { btn.classList.add('blocked');  btn.disabled = true; }
+    else                       { btn.classList.add('avail');    btn.onclick  = () => pickEditTime(t, grid, btn); }
     grid.appendChild(btn);
   });
   document.getElementById('editOverlay').classList.add('show');
 }
 
 function pickEditTime(t, grid, btnEl) {
-  editNewTime=t;
-  grid.querySelectorAll('.edit-slot').forEach(b=>{ if(b.classList.contains('pick')){b.classList.remove('pick');b.classList.add('avail');} });
+  editNewTime = t;
+  grid.querySelectorAll('.edit-slot').forEach(b => {
+    if (b.classList.contains('pick')) { b.classList.remove('pick'); b.classList.add('avail'); }
+  });
   btnEl.classList.remove('avail'); btnEl.classList.add('pick');
-  document.getElementById('editConfirmBtn').disabled=false;
+  document.getElementById('editConfirmBtn').disabled = false;
 }
 
 async function confirmEdit(orig) {
   if (!editNewTime) return;
   try {
-    await apiPost({ action:'update', id: editId, time: editNewTime });
+    await apiUpdate(editId, editNewTime);
     await loadReservations();
     closeModal('editOverlay');
     searchReservations();
     showAlert('✅','변경 완료',`<b>${orig.time}</b> → <b>${editNewTime} ~ ${nextHour(editNewTime)}</b>로 변경되었습니다.`);
-  } catch(e) { showAlert('❌','오류','변경 중 오류가 발생했습니다.'); }
+  } catch(e) {
+    showAlert('❌', '오류', '변경 중 오류가 발생했습니다.');
+  }
 }
 
-// MODAL UTILS
+// ═══════════════════════════════════════
+//  MODAL UTILS
+// ═══════════════════════════════════════
 function closeModal(id) { document.getElementById(id).classList.remove('show'); }
 function showAlert(icon, title, body) {
-  document.getElementById('alertIcon').textContent=icon;
-  document.getElementById('alertTitle').textContent=title;
-  document.getElementById('alertBody').innerHTML=body;
+  document.getElementById('alertIcon').textContent  = icon;
+  document.getElementById('alertTitle').textContent = title;
+  document.getElementById('alertBody').innerHTML    = body;
   document.getElementById('alertOverlay').classList.add('show');
 }
 
-// INIT
-document.getElementById('bookNick').addEventListener('input',()=>{ updateSubmit(); renderGrid(); });
-document.getElementById('searchNick').addEventListener('keydown',e=>{ if(e.key==='Enter') searchReservations(); });
+// ═══════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════
+document.getElementById('bookNick').addEventListener('input', () => { updateSubmit(); renderGrid(); });
+document.getElementById('searchNick').addEventListener('keydown', e => { if(e.key==='Enter') searchReservations(); });
 
-// Auto-refresh every 60s
-setInterval(loadReservations, 60000);
-// Clock tick every 30s
-setInterval(()=>{ document.getElementById('currentDateTime').textContent=formatNow(); }, 30000);
+// 60초마다 자동 새로고침
+setInterval(() => loadReservations(), 60000);
+// 30초마다 시계 업데이트
+setInterval(() => { document.getElementById('currentDateTime').textContent = formatNow(); }, 30000);
 
-// Initial load
+// 최초 로드
 loadReservations();
 </script>
 </body>
