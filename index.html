@@ -28,7 +28,6 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { background: var(--cream); font-family: 'Noto Sans KR', sans-serif; color: var(--text-dark); min-height: 100vh; }
 
-/* HEADER */
 header { background: var(--rust-dark); position: relative; overflow: hidden; }
 .header-deco {
   position: absolute; inset: 0;
@@ -53,18 +52,16 @@ header { background: var(--rust-dark); position: relative; overflow: hidden; }
 .tab-btn:hover { background: rgba(255,255,255,0.14); color: rgba(255,255,255,0.8); }
 .tab-btn.active { background: var(--cream); color: var(--rust-dark); font-weight: 700; }
 
-/* LOADING OVERLAY */
 .loading-overlay {
   position: fixed; inset: 0; background: rgba(107,45,31,0.88);
   z-index: 999; display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 16px; backdrop-filter: blur(4px); transition: opacity 0.4s;
+  gap: 16px; backdrop-filter: blur(4px);
 }
 .loading-overlay.hide { display: none; }
 .spinner { width: 44px; height: 44px; border: 4px solid rgba(255,255,255,0.2); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .loading-text { color: white; font-size: 0.85rem; letter-spacing: 1px; }
 
-/* SYNC BAR */
 .sync-bar {
   background: var(--cream-dark); border-bottom: 1px solid var(--cream-mid);
   padding: 7px 20px; display: flex; align-items: center; justify-content: space-between;
@@ -72,7 +69,7 @@ header { background: var(--rust-dark); position: relative; overflow: hidden; }
 }
 .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); display: inline-block; margin-right: 5px; animation: pulse 2s infinite; }
 .sync-dot.err { background: #e05555; animation: none; }
-.sync-dot.loading { background: var(--gold); }
+.sync-dot.syncing { background: var(--gold); animation: none; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 .refresh-btn {
   padding: 4px 12px; border-radius: 6px; border: 1px solid var(--cream-mid);
@@ -81,13 +78,11 @@ header { background: var(--rust-dark); position: relative; overflow: hidden; }
 }
 .refresh-btn:hover { background: var(--rust); color: white; border-color: var(--rust); }
 
-/* MAIN */
 main { max-width: 1060px; margin: 0 auto; padding: 28px 20px 80px; }
 .panel { display: none; }
 .panel.active { display: block; animation: fadeUp 0.3s ease; }
 @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
 
-/* NICK BAR */
 .nick-bar {
   display: flex; align-items: center; gap: 12px;
   background: var(--white); border: 1.5px solid var(--cream-dark);
@@ -110,7 +105,6 @@ main { max-width: 1060px; margin: 0 auto; padding: 28px 20px 80px; }
 .quota-pill.warn { background: #FEF0E7; color: var(--gold); }
 .quota-pill.full { background: var(--rust); color: white; }
 
-/* WINDOW NOTICE */
 .window-notice {
   background: linear-gradient(135deg, #FEF6EE, #FDE9DF);
   border: 1.5px solid var(--rust-pale); border-radius: 12px;
@@ -121,7 +115,6 @@ main { max-width: 1060px; margin: 0 auto; padding: 28px 20px 80px; }
 .wn-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 1px; }
 .window-notice strong { font-weight: 700; color: var(--rust-dark); }
 
-/* ROOM TABS */
 .room-tabs { display: flex; gap: 8px; margin-bottom: 16px; }
 .room-tab {
   padding: 9px 24px; border-radius: 9px; border: 1.5px solid var(--cream-mid);
@@ -131,7 +124,6 @@ main { max-width: 1060px; margin: 0 auto; padding: 28px 20px 80px; }
 .room-tab:hover { border-color: var(--rust-light); color: var(--rust); }
 .room-tab.active { background: var(--rust); border-color: var(--rust); color: white; }
 
-/* DAY TABS */
 .day-tabs { display: flex; gap: 6px; margin-bottom: 18px; flex-wrap: wrap; }
 .day-tab {
   padding: 8px 14px; border-radius: 8px; border: 1.5px solid var(--cream-mid);
@@ -144,7 +136,6 @@ main { max-width: 1060px; margin: 0 auto; padding: 28px 20px 80px; }
 .day-tab.bookable.active { background: var(--green); border-color: var(--green); color: white; }
 .open-dot { position: absolute; top:-4px; right:-4px; width:8px; height:8px; background:var(--green); border-radius:50%; border:2px solid var(--cream); }
 
-/* LEGEND */
 .legend { display: flex; gap: 16px; margin-bottom: 14px; flex-wrap: wrap; }
 .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.72rem; color: var(--text-light); }
 .leg-dot { width: 14px; height: 14px; border-radius: 4px; flex-shrink: 0; }
@@ -154,7 +145,6 @@ main { max-width: 1060px; margin: 0 auto; padding: 28px 20px 80px; }
 .ld-my   { background: linear-gradient(135deg,#FEF0D8,#FDDBA8); border:1.5px solid var(--gold); }
 .ld-lock { background: var(--cream-dark); border: 1.5px solid var(--cream-mid); }
 
-/* TIME GRID */
 .time-grid { background: var(--white); border-radius: 14px; border: 1.5px solid var(--cream-dark); overflow: hidden; margin-bottom: 22px; }
 .time-grid-header { background: var(--rust); display: grid; grid-template-columns: 72px 1fr; padding: 12px 0; }
 .tg-head-time { padding: 0 12px; font-size: 0.68rem; font-weight: 700; letter-spacing: 1.5px; color: rgba(255,255,255,0.5); display: flex; align-items: center; }
@@ -162,21 +152,42 @@ main { max-width: 1060px; margin: 0 auto; padding: 28px 20px 80px; }
 .time-slot-row { display: grid; grid-template-columns: 72px 1fr; border-bottom: 1px solid var(--cream-dark); min-height: 56px; }
 .time-slot-row:last-child { border-bottom: none; }
 .ts-label { display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; color: var(--text-mid); background: var(--cream); border-right: 1px solid var(--cream-dark); }
-.ts-cell { display: flex; align-items: center; justify-content: center; font-size: 1.15rem; transition: all 0.15s; cursor: default; }
+.ts-cell { display: flex; align-items: center; justify-content: center; font-size: 1.15rem; transition: all 0.15s; cursor: default; position: relative; }
+
+/* 예약 가능 */
 .ts-cell.avail { background: var(--green-bg); cursor: pointer; }
 .ts-cell.avail:hover { background: #D2EAD9; transform: scale(0.96); }
 .ts-cell.avail::after { content: '○'; color: var(--green); font-weight: 700; }
+
+/* 기본 스케줄 불가 or 타인이 이미 예약 */
 .ts-cell.blocked { background: var(--pink-bg); }
 .ts-cell.blocked::after { content: '×'; color: var(--pink-blocked); font-weight: 700; }
+
+/* 예약 창 닫힘 */
 .ts-cell.locked { background: var(--cream); }
 .ts-cell.locked::after { content: '–'; color: var(--cream-mid); font-size: 1.4rem; }
+
+/* 내가 선택 중(pending) */
 .ts-cell.selected { background: var(--rust); cursor: pointer; }
 .ts-cell.selected:hover { background: var(--rust-dark); transform: scale(0.96); }
 .ts-cell.selected::after { content: '✓'; color: white; font-weight: 900; }
+
+/* 내 확정 예약 */
 .ts-cell.my-res { background: linear-gradient(135deg,#FEF0D8,#FDDBA8); cursor: default; }
 .ts-cell.my-res::after { content: '★'; color: var(--gold); }
 
-/* CHIPS */
+/* 타인 예약 툴팁 */
+.ts-cell.blocked .reserved-by {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%; transform: translateX(-50%);
+  background: var(--rust-dark); color: white;
+  font-size: 0.65rem; padding: 4px 10px; border-radius: 6px;
+  white-space: nowrap; pointer-events: none; z-index: 10;
+}
+.ts-cell.blocked:hover .reserved-by { display: block; }
+
 .chip-section { background: var(--white); border: 1.5px solid var(--cream-dark); border-radius: 14px; padding: 18px 22px; margin-bottom: 20px; }
 .chip-section-title { font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-light); margin-bottom: 12px; }
 .chip-list { display: flex; flex-wrap: wrap; gap: 8px; min-height: 34px; align-items: center; }
@@ -186,7 +197,6 @@ main { max-width: 1060px; margin: 0 auto; padding: 28px 20px 80px; }
 .chip-x:hover { opacity: 1; }
 .chip-empty { font-size: 0.78rem; color: var(--text-light); opacity: 0.6; font-style: italic; }
 
-/* SUBMIT */
 .submit-btn {
   width: 100%; padding: 17px; background: var(--rust); color: white; border: none;
   border-radius: 12px; font-family: 'Bebas Neue', cursive; font-size: 1.4rem;
@@ -196,7 +206,6 @@ main { max-width: 1060px; margin: 0 auto; padding: 28px 20px 80px; }
 .submit-btn:hover:not(:disabled) { background: var(--rust-dark); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(139,58,42,0.3); }
 .submit-btn:disabled { background: var(--cream-mid); color: var(--text-light); cursor: not-allowed; box-shadow: none; }
 
-/* MY PANEL */
 .my-panel-header { margin-bottom: 24px; }
 .my-panel-title { font-family: 'Bebas Neue', cursive; font-size: 2rem; color: var(--rust-dark); letter-spacing: 1.5px; }
 .my-panel-sub { font-size: 0.8rem; color: var(--text-light); margin-top: 2px; }
@@ -227,7 +236,6 @@ main { max-width: 1060px; margin: 0 auto; padding: 28px 20px 80px; }
 .action-btn.cancel-btn:hover:not(:disabled) { background: var(--pink-bg); border-color: var(--pink-blocked); color: var(--rust-dark); }
 .action-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 
-/* MODALS */
 .overlay { display: none; position: fixed; inset: 0; background: rgba(44,24,16,0.65); z-index: 300; align-items: center; justify-content: center; backdrop-filter: blur(3px); padding: 16px; }
 .overlay.show { display: flex; }
 .modal { background: var(--cream); border-radius: 20px; padding: 36px 30px; max-width: 400px; width: 100%; text-align: center; animation: modalIn 0.25s ease; }
@@ -294,7 +302,6 @@ main { max-width: 1060px; margin: 0 auto; padding: 28px 20px 80px; }
 </div>
 
 <main>
-  <!-- BOOKING PANEL -->
   <div class="panel active" id="panelBook">
     <div class="nick-bar">
       <span class="nick-label">닉네임</span>
@@ -316,7 +323,7 @@ main { max-width: 1060px; margin: 0 auto; padding: 28px 20px 80px; }
     <div class="day-tabs" id="dayTabs"></div>
     <div class="legend">
       <div class="legend-item"><div class="leg-dot ld-ok"></div>예약 가능</div>
-      <div class="legend-item"><div class="leg-dot ld-no"></div>예약 불가</div>
+      <div class="legend-item"><div class="leg-dot ld-no"></div>예약 불가 / 마감</div>
       <div class="legend-item"><div class="leg-dot ld-sel"></div>선택됨</div>
       <div class="legend-item"><div class="leg-dot ld-my"></div>내 예약</div>
       <div class="legend-item"><div class="leg-dot ld-lock"></div>예약 창 닫힘</div>
@@ -335,7 +342,6 @@ main { max-width: 1060px; margin: 0 auto; padding: 28px 20px 80px; }
     <button class="submit-btn" id="submitBtn" onclick="submitBooking()" disabled>예약 확정하기</button>
   </div>
 
-  <!-- MY PANEL -->
   <div class="panel" id="panelMy">
     <div class="my-panel-header">
       <div class="my-panel-title">내 예약 조회</div>
@@ -396,16 +402,13 @@ main { max-width: 1060px; margin: 0 auto; padding: 28px 20px 80px; }
 
 <script>
 // ═══════════════════════════════════════
-//  CONFIG — GET-only API (CORS 우회)
+//  CONFIG
 // ═══════════════════════════════════════
-const API = 'https://script.google.com/macros/s/AKfycbzMVGsWCA2v1XP1_TlDOQhfz5kftSfFO2cZILQzvEQwkhbc8dE6Fa35I3vRluhFwoCu/exec';
+const API = 'https://script.google.com/macros/s/AKfycbzMvdeJG4rfQxLFtDCTgy9vkpgEivScTV_AKfG9F0usMyCCXaHEV23NN4bS4iajNq1O/exec';
 
-// 모든 요청을 GET + query string으로 처리 (CORS 문제 없음)
 async function apiCall(params) {
-  const qs = new URLSearchParams(params).toString();
-  const url = `${API}?${qs}`;
-  // JSONP 방식으로 호출 (Apps Script GET은 항상 허용)
-  const res = await fetch(url);
+  const qs  = new URLSearchParams(params).toString();
+  const res = await fetch(`${API}?${qs}`);
   return res.json();
 }
 
@@ -414,6 +417,7 @@ const DAYS   = ['MON','TUE','WED','THU','FRI','SAT'];
 const DAY_KO = { MON:'월요일', TUE:'화요일', WED:'수요일', THU:'목요일', FRI:'금요일', SAT:'토요일' };
 const DAY_JS = { MON:1, TUE:2, WED:3, THU:4, FRI:5, SAT:6 };
 
+// 기본 스케줄 (이미지 기준 O=1, X=0)
 const BASE = {
   room3: {
     MON:[1,0,0,0,0,0,0,0,0,0], TUE:[1,1,1,0,0,0,0,0,0,0],
@@ -430,21 +434,22 @@ const BASE = {
 // ═══════════════════════════════════════
 //  STATE
 // ═══════════════════════════════════════
-let reservations = [];
-let pending      = [];
+let reservations = [];   // Google Sheets에서 가져온 확정 예약
+let pending      = [];   // 현재 선택 중인 슬롯 (미확정)
 let currentRoom  = 'room3';
 let currentDay   = 'MON';
 let editId       = null;
 let editNewTime  = null;
 
 // ═══════════════════════════════════════
-//  API CALLS
+//  API
 // ═══════════════════════════════════════
 async function loadReservations(manual = false) {
-  setSyncStatus('loading');
+  setSyncStatus('syncing');
   try {
     const json = await apiCall({});
-    reservations = (json.data || []).filter(r => r.id); // 빈 행 제거
+    // 빈 행, id 없는 행 필터링 + 모든 필드 trim
+    reservations = (json.data || []).filter(r => r.id && r.id.trim() !== '');
     setSyncStatus('ok');
   } catch(e) {
     setSyncStatus('err');
@@ -453,37 +458,48 @@ async function loadReservations(manual = false) {
   renderAll();
 }
 
-async function apiAdd(row) {
-  return apiCall({ action:'add', ...row });
-}
-async function apiDelete(id) {
-  return apiCall({ action:'delete', id });
-}
-async function apiUpdate(id, time) {
-  return apiCall({ action:'update', id, time });
-}
+async function apiAdd(row)            { return apiCall({ action:'add',    ...row }); }
+async function apiDelete(id)          { return apiCall({ action:'delete', id }); }
+async function apiUpdate(id, time)    { return apiCall({ action:'update', id, time }); }
 
 function setSyncStatus(state) {
   const dot  = document.getElementById('syncDot');
   const text = document.getElementById('syncText');
-  if (state === 'loading') {
-    dot.className = 'sync-dot loading';
-    text.textContent = '동기화 중...';
-  } else if (state === 'ok') {
-    dot.className = 'sync-dot';
-    text.textContent = `마지막 동기화: ${fmtTime(new Date())}`;
-  } else {
-    dot.className = 'sync-dot err';
-    text.textContent = '연결 오류 — 새로고침을 눌러주세요';
-  }
+  if      (state === 'syncing') { dot.className='sync-dot syncing'; text.textContent='동기화 중...'; }
+  else if (state === 'ok')      { dot.className='sync-dot';         text.textContent=`마지막 동기화: ${fmtTime(new Date())}`; }
+  else                          { dot.className='sync-dot err';     text.textContent='연결 오류 — 새로고침을 눌러주세요'; }
+}
+
+// ═══════════════════════════════════════
+//  슬롯 상태 판별 (핵심 로직)
+// ═══════════════════════════════════════
+// 특정 룸+요일+시간에 이미 예약이 있는지 (내 예약 제외 옵션)
+function isSlotTaken(room, day, time, excludeId = null) {
+  return reservations.some(r =>
+    r.room === room &&
+    r.day  === day  &&
+    r.time === time &&
+    (excludeId === null || r.id !== excludeId)
+  );
+}
+
+// 내 예약인지
+function isMySlot(nick, room, day, time) {
+  if (!nick) return false;
+  return reservations.some(r =>
+    r.nick === nick &&
+    r.room === room &&
+    r.day  === day  &&
+    r.time === time
+  );
 }
 
 // ═══════════════════════════════════════
 //  TIME UTILS
 // ═══════════════════════════════════════
-function getNow()     { return new Date(); }
-function nextHour(t)  { return String(parseInt(t)+1).padStart(2,'0')+':00'; }
-function fmtTime(d)   { return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; }
+function getNow()    { return new Date(); }
+function nextHour(t) { return String(parseInt(t)+1).padStart(2,'0')+':00'; }
+function fmtTime(d)  { return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; }
 
 function isWindowOpen(dayStr) {
   const n = getNow();
@@ -542,6 +558,7 @@ function renderDayTabs() {
 function renderGrid() {
   const nick   = document.getElementById('bookNick').value.trim();
   const isOpen = isWindowOpen(currentDay);
+
   document.getElementById('gridHeadDay').textContent =
     `${currentDay} · ${DAY_KO[currentDay]}  ${isOpen ? '✅ 예약 창 열림' : '🔒 예약 창 닫힘'}`;
 
@@ -549,28 +566,65 @@ function renderGrid() {
   container.innerHTML = '';
 
   TIMES.forEach((t, ti) => {
-    const baseOk = BASE[currentRoom][currentDay][ti] === 1;
-    const taken  = reservations.some(r => r.room===currentRoom && r.day===currentDay && r.time===t);
-    const isMine = nick && reservations.some(r => r.room===currentRoom && r.day===currentDay && r.time===t && r.nick===nick);
-    const isPend = pending.some(s => s.room===currentRoom && s.day===currentDay && s.time===t);
+    const baseOk  = BASE[currentRoom][currentDay][ti] === 1;
+    const taken   = isSlotTaken(currentRoom, currentDay, t);        // 누군가 예약함
+    const isMine  = isMySlot(nick, currentRoom, currentDay, t);     // 내가 예약함
+    const isPend  = pending.some(s => s.room===currentRoom && s.day===currentDay && s.time===t);
 
     const row  = document.createElement('div'); row.className = 'time-slot-row';
     const lbl  = document.createElement('div'); lbl.className = 'ts-label'; lbl.textContent = t;
     const cell = document.createElement('div'); cell.className = 'ts-cell';
 
-    if      (isPend)           { cell.classList.add('selected'); cell.onclick = () => deselect(currentRoom, currentDay, t); }
-    else if (isMine)           { cell.classList.add('my-res');   cell.title = '내 예약'; }
-    else if (!isOpen)          { cell.classList.add('locked');   cell.title = '예약 창이 닫혀있습니다'; }
-    else if (!baseOk || taken) { cell.classList.add('blocked'); }
-    else                       { cell.classList.add('avail');    cell.onclick = () => selectSlot(currentRoom, currentDay, t); }
+    if (isPend) {
+      // 현재 내가 선택 중
+      cell.classList.add('selected');
+      cell.onclick = () => deselect(currentRoom, currentDay, t);
+      cell.title = '클릭하면 선택 취소';
 
-    row.appendChild(lbl); row.appendChild(cell); container.appendChild(row);
+    } else if (isMine) {
+      // 내가 확정 예약한 슬롯
+      cell.classList.add('my-res');
+      cell.title = '내 예약';
+
+    } else if (!isOpen) {
+      // 예약 창 닫힘
+      cell.classList.add('locked');
+      cell.title = '예약 창이 닫혀있습니다 (전날 12:00~20:00에 예약 가능)';
+
+    } else if (!baseOk) {
+      // 기본 스케줄상 불가
+      cell.classList.add('blocked');
+      cell.title = '예약 불가 시간';
+
+    } else if (taken) {
+      // 다른 사람이 이미 예약한 슬롯 → 예약 불가
+      cell.classList.add('blocked');
+      cell.title = '이미 예약된 시간입니다';
+      // 호버 시 "예약완료" 툴팁
+      const tip = document.createElement('span');
+      tip.className = 'reserved-by';
+      tip.textContent = '예약 마감';
+      cell.appendChild(tip);
+
+    } else {
+      // 예약 가능
+      cell.classList.add('avail');
+      cell.onclick = () => selectSlot(currentRoom, currentDay, t);
+      cell.title = '클릭하여 선택';
+    }
+
+    row.appendChild(lbl);
+    row.appendChild(cell);
+    container.appendChild(row);
   });
 }
 
 function renderChips() {
   const list = document.getElementById('chipList');
-  if (!pending.length) { list.innerHTML = '<div class="chip-empty">예약할 시간을 선택하세요</div>'; return; }
+  if (!pending.length) {
+    list.innerHTML = '<div class="chip-empty">예약할 시간을 선택하세요</div>';
+    return;
+  }
   list.innerHTML = pending.map(s =>
     `<div class="chip">${s.room.toUpperCase()} · ${s.day} ${s.time}
       <span class="chip-x" onclick="deselect('${s.room}','${s.day}','${s.time}')">×</span></div>`
@@ -578,7 +632,7 @@ function renderChips() {
 }
 
 // ═══════════════════════════════════════
-//  INTERACTIONS
+//  BOOKING INTERACTIONS
 // ═══════════════════════════════════════
 function selectDay(d) { currentDay = d; renderAll(); }
 
@@ -598,12 +652,23 @@ function selectSlot(room, day, time) {
     showAlert('⚠️', '닉네임 필요', '예약 전에 닉네임을 입력해주세요.');
     return;
   }
+
+  // 같은 룸+요일+시간에 이미 예약이 있는지 실시간 재확인
+  if (isSlotTaken(room, day, time)) {
+    showAlert('❌', '예약 마감', '방금 다른 분이 예약한 시간입니다.<br>새로고침 후 다시 확인해주세요.');
+    loadReservations(); // 자동 새로고침
+    return;
+  }
+
+  // 하루 2타임 제한 (룸 무관, 해당 요일 기준)
   const dayBooked  = reservations.filter(r => r.nick===nick && r.day===day).length;
   const dayPending = pending.filter(s => s.day===day).length;
   if (dayBooked + dayPending >= 2) {
-    showAlert('⚠️', '하루 2타임 초과', `<b>${DAY_KO[day]}</b>에 이미 2타임이 선택/예약되었습니다.<br>1인당 하루 최대 2타임까지 가능합니다.`);
+    showAlert('⚠️', '하루 2타임 초과',
+      `<b>${DAY_KO[day]}</b>에 이미 2타임이 선택/예약되었습니다.<br>1인당 하루 최대 2타임까지 가능합니다.`);
     return;
   }
+
   pending.push({ room, day, time });
   renderAll();
 }
@@ -618,10 +683,10 @@ function updateSubmit() {
   document.getElementById('submitBtn').disabled = !nick || !pending.length;
   const days = {};
   pending.forEach(s => { days[s.day] = (days[s.day]||0)+1; });
-  const max = pending.length ? Math.max(...Object.values(days)) : 0;
+  const max  = pending.length ? Math.max(...Object.values(days)) : 0;
   const pill = document.getElementById('quotaPill');
   pill.textContent = `선택 ${pending.length} / 2`;
-  pill.className = 'quota-pill' + (max>=2?' full': max===1?' warn':'');
+  pill.className   = 'quota-pill' + (max>=2?' full': max===1?' warn':'');
 }
 
 // ═══════════════════════════════════════
@@ -631,11 +696,17 @@ async function submitBooking() {
   const nick = document.getElementById('bookNick').value.trim();
   if (!nick || !pending.length) return;
 
+  // 최종 유효성 검사
   for (const s of pending) {
     const ti = TIMES.indexOf(s.time);
-    if (!BASE[s.room][s.day][ti]) { showAlert('❌','예약 불가','선택한 시간은 예약 불가 시간입니다.'); return; }
-    if (reservations.some(r => r.room===s.room && r.day===s.day && r.time===s.time)) {
-      showAlert('❌','중복 예약','선택한 시간에 이미 예약이 있습니다.<br>새로고침 후 다시 시도해주세요.'); return;
+    if (!BASE[s.room][s.day][ti]) {
+      showAlert('❌', '예약 불가', '선택한 시간은 예약 불가 시간입니다.'); return;
+    }
+    if (isSlotTaken(s.room, s.day, s.time)) {
+      showAlert('❌', '예약 마감',
+        `<b>${s.room.toUpperCase()} · ${DAY_KO[s.day]} ${s.time}</b>는 이미 예약된 시간입니다.<br>새로고침 후 다시 선택해주세요.`);
+      await loadReservations();
+      return;
     }
   }
 
@@ -645,7 +716,10 @@ async function submitBooking() {
 
   const confirmed = pending.map(s => ({
     id:   `${Date.now()}_${Math.random().toString(36).slice(2,7)}`,
-    nick, room: s.room, day: s.day, time: s.time,
+    nick,
+    room: s.room,
+    day:  s.day,
+    time: s.time,
     at:   new Date().toISOString()
   }));
 
@@ -653,11 +727,13 @@ async function submitBooking() {
     for (const c of confirmed) {
       await apiAdd(c);
     }
-    await loadReservations();
+    await loadReservations(); // 시트에서 최신 데이터 다시 로드
 
     document.getElementById('successBody').innerHTML   = `<b>${nick}</b>님의 예약이 확정되었습니다!`;
     document.getElementById('successDetail').innerHTML =
-      confirmed.map(c => `📍 <b>${c.room.toUpperCase()}</b> · ${DAY_KO[c.day]} ${c.time} ~ ${nextHour(c.time)}`).join('<br>');
+      confirmed.map(c =>
+        `📍 <b>${c.room.toUpperCase()}</b> · ${DAY_KO[c.day]} ${c.time} ~ ${nextHour(c.time)}`
+      ).join('<br>');
     document.getElementById('successOverlay').classList.add('show');
     pending = [];
     renderAll();
@@ -698,7 +774,9 @@ function searchReservations() {
         <div class="res-day">${r.day} · ${DAY_KO[r.day]}</div>
         <div class="res-time">${r.time} – ${nextHour(r.time)} <span>1시간</span></div>
         <span class="res-status">예약확정</span>
-        <span class="res-window-badge ${canModify?'':'res-window-closed'}">${canModify?'✅ 변경/취소 가능':'🔒 변경 불가'}</span>
+        <span class="res-window-badge ${canModify?'':'res-window-closed'}">
+          ${canModify ? '✅ 변경/취소 가능' : '🔒 변경 불가'}
+        </span>
       </div>
       <div class="res-actions">
         <button class="action-btn edit" ${canModify?'':'disabled'} onclick="openEdit('${r.id}','${nick}')">변경</button>
@@ -708,13 +786,14 @@ function searchReservations() {
   }).join('');
 }
 
-// CANCEL
+// ── CANCEL ──
 let pendingCancelId = null;
 function openCancel(id, nick) {
   const r = reservations.find(x => x.id===id); if (!r) return;
   pendingCancelId = id;
   document.getElementById('cancelBody').innerHTML =
-    `<b>${nick}</b>님의 예약을 취소하시겠습니까?<br><small style="color:var(--text-light)">취소는 예약 창 마감 이후에도 가능합니다.</small>`;
+    `<b>${nick}</b>님의 예약을 취소하시겠습니까?<br>
+     <small style="color:var(--text-light)">취소 후 해당 시간은 다른 분이 예약할 수 있습니다.</small>`;
   document.getElementById('cancelDetail').innerHTML =
     `📍 <b>${r.room.toUpperCase()}</b> · ${DAY_KO[r.day]}<br>🕐 ${r.time} ~ ${nextHour(r.time)}`;
   document.getElementById('cancelConfirmBtn').onclick = () => confirmCancel(nick);
@@ -724,19 +803,20 @@ function openCancel(id, nick) {
 async function confirmCancel(nick) {
   try {
     await apiDelete(pendingCancelId);
-    await loadReservations();
+    await loadReservations(); // 취소 후 즉시 반영
     closeModal('cancelOverlay');
-    searchReservations();
+    searchReservations();     // 조회 목록도 갱신
   } catch(e) {
     showAlert('❌', '오류', '취소 중 오류가 발생했습니다.');
   }
 }
 
-// EDIT
+// ── EDIT ──
 function openEdit(id, nick) {
   const r = reservations.find(x => x.id===id); if (!r) return;
   if (!isWindowOpen(r.day)) {
-    showAlert('🔒','변경 불가',`<b>${DAY_KO[r.day]}</b>의 예약 창이 닫혀있습니다.<br>전날 12:00~20:00 사이에만 변경 가능합니다.`);
+    showAlert('🔒','변경 불가',
+      `<b>${DAY_KO[r.day]}</b>의 예약 창이 닫혀있습니다.<br>전날 12:00~20:00 사이에만 변경 가능합니다.`);
     return;
   }
   editId = id; editNewTime = null;
@@ -748,13 +828,15 @@ function openEdit(id, nick) {
   const grid = document.getElementById('editGrid'); grid.innerHTML = '';
   TIMES.forEach((t, ti) => {
     const baseOk = BASE[r.room][r.day][ti] === 1;
-    const taken  = reservations.some(x => x.room===r.room && x.day===r.day && x.time===t && x.id!==id);
+    // 변경 시: 현재 내 예약 슬롯(id 제외)을 제외하고 taken 판단
+    const taken  = isSlotTaken(r.room, r.day, t, id);
     const isCur  = t === r.time;
     const btn    = document.createElement('button');
-    btn.className = 'edit-slot'; btn.textContent = t;
-    if      (isCur)            { btn.classList.add('current');  btn.disabled = true; }
-    else if (!baseOk || taken) { btn.classList.add('blocked');  btn.disabled = true; }
-    else                       { btn.classList.add('avail');    btn.onclick  = () => pickEditTime(t, grid, btn); }
+    btn.className  = 'edit-slot';
+    btn.textContent = t;
+    if      (isCur)            { btn.classList.add('current'); btn.disabled = true; btn.title='현재 예약'; }
+    else if (!baseOk || taken) { btn.classList.add('blocked'); btn.disabled = true; btn.title=taken?'이미 예약된 시간':'예약 불가 시간'; }
+    else                       { btn.classList.add('avail');   btn.onclick  = () => pickEditTime(t, grid, btn); }
     grid.appendChild(btn);
   });
   document.getElementById('editOverlay').classList.add('show');
@@ -765,18 +847,27 @@ function pickEditTime(t, grid, btnEl) {
   grid.querySelectorAll('.edit-slot').forEach(b => {
     if (b.classList.contains('pick')) { b.classList.remove('pick'); b.classList.add('avail'); }
   });
-  btnEl.classList.remove('avail'); btnEl.classList.add('pick');
+  btnEl.classList.remove('avail');
+  btnEl.classList.add('pick');
   document.getElementById('editConfirmBtn').disabled = false;
 }
 
 async function confirmEdit(orig) {
   if (!editNewTime) return;
+  // 변경하려는 시간도 선점됐는지 재확인 (내 예약 제외)
+  if (isSlotTaken(orig.room, orig.day, editNewTime, editId)) {
+    showAlert('❌','변경 불가','방금 다른 분이 해당 시간을 예약했습니다.<br>다른 시간을 선택해주세요.');
+    await loadReservations();
+    closeModal('editOverlay');
+    return;
+  }
   try {
     await apiUpdate(editId, editNewTime);
     await loadReservations();
     closeModal('editOverlay');
     searchReservations();
-    showAlert('✅','변경 완료',`<b>${orig.time}</b> → <b>${editNewTime} ~ ${nextHour(editNewTime)}</b>로 변경되었습니다.`);
+    showAlert('✅','변경 완료',
+      `<b>${orig.time}</b> → <b>${editNewTime} ~ ${nextHour(editNewTime)}</b>로 변경되었습니다.`);
   } catch(e) {
     showAlert('❌', '오류', '변경 중 오류가 발생했습니다.');
   }
@@ -799,12 +890,9 @@ function showAlert(icon, title, body) {
 document.getElementById('bookNick').addEventListener('input', () => { updateSubmit(); renderGrid(); });
 document.getElementById('searchNick').addEventListener('keydown', e => { if(e.key==='Enter') searchReservations(); });
 
-// 60초마다 자동 새로고침
 setInterval(() => loadReservations(), 60000);
-// 30초마다 시계 업데이트
 setInterval(() => { document.getElementById('currentDateTime').textContent = formatNow(); }, 30000);
 
-// 최초 로드
 loadReservations();
 </script>
 </body>
