@@ -118,6 +118,7 @@ main { max-width:1060px; margin:0 auto; padding:28px 20px 80px; }
 .ld-my   { background:linear-gradient(135deg,#FEF0D8,#FDDBA8); border:1.5px solid var(--gold); }
 .ld-lock { background:var(--cream-dark); border:1.5px solid var(--cream-mid); }
 .ld-admin-lock { background:#E8EAF6; border:1.5px solid var(--admin); }
+.ld-admin-open { background:#FFF8E1; border:1.5px solid var(--gold); }
 
 /* ── TIME GRID ── */
 .time-grid { background:var(--white); border-radius:14px; border:1.5px solid var(--cream-dark); overflow:hidden; margin-bottom:22px; }
@@ -143,6 +144,10 @@ main { max-width:1060px; margin:0 auto; padding:28px 20px 80px; }
 /* 관리자가 잠근 슬롯 */
 .ts-cell.admin-locked { background:#E8EAF6; cursor:default; }
 .ts-cell.admin-locked::after { content:'🔒'; font-size:0.9rem; }
+/* 관리자가 열어준 슬롯 */
+.ts-cell.admin-opened { background:#FFF8E1; cursor:pointer; }
+.ts-cell.admin-opened:hover { background:#FFF0C0; transform:scale(0.96); }
+.ts-cell.admin-opened::after { content:'○'; color:var(--gold); font-weight:700; }
 
 /* ── CHIPS ── */
 .chip-section { background:var(--white); border:1.5px solid var(--cream-dark); border-radius:14px; padding:18px 22px; margin-bottom:20px; }
@@ -265,6 +270,7 @@ main { max-width:1060px; margin:0 auto; padding:28px 20px 80px; }
 .status-reserved { background:linear-gradient(135deg,#FEF0D8,#FDDBA8); color:var(--gold); }
 .status-base-blocked { background:var(--pink-bg); color:var(--pink-blocked); }
 .status-admin-locked { background:#E8EAF6; color:var(--admin); }
+.status-admin-opened { background:#FFF8E1; color:var(--gold); }
 .admin-slot-nick { font-size:0.8rem; font-weight:700; color:var(--text-dark); }
 .admin-toggle-btn {
   padding:7px 16px; border-radius:8px; font-size:0.72rem; font-weight:700;
@@ -394,6 +400,7 @@ main { max-width:1060px; margin:0 auto; padding:28px 20px 80px; }
       <div class="legend-item"><div class="leg-dot ld-my"></div>내 예약</div>
       <div class="legend-item"><div class="leg-dot ld-lock"></div>예약 창 닫힘</div>
       <div class="legend-item"><div class="leg-dot ld-admin-lock"></div>관리자 잠금</div>
+      <div class="legend-item"><div class="leg-dot ld-admin-open"></div>관리자 개방</div>
     </div>
     <div class="time-grid">
       <div class="time-grid-header">
@@ -469,6 +476,7 @@ main { max-width:1060px; margin:0 auto; padding:28px 20px 80px; }
         <div class="stat-card"><div class="stat-num" id="statRoom3">0</div><div class="stat-label">ROOM 3</div></div>
         <div class="stat-card"><div class="stat-num" id="statRoom4">0</div><div class="stat-label">ROOM 4</div></div>
         <div class="stat-card"><div class="stat-num" id="statLocked">0</div><div class="stat-label">잠금 슬롯</div></div>
+        <div class="stat-card"><div class="stat-num" id="statOpened" style="color:var(--gold)">0</div><div class="stat-label">개방 슬롯</div></div>
       </div>
 
       <!-- 슬롯 잠금 관리 -->
@@ -568,7 +576,8 @@ const BASE = {
 //  STATE
 // ═══════════════════════════════════════
 let reservations = [];   // 확정 예약
-let adminLocks   = [];   // 관리자 잠금: [{room, day, time}]
+let adminLocks   = [];   // 관리자 잠금: nick==='__ADMIN_LOCK__'
+let adminOpens   = [];   // 관리자 개방: nick==='__ADMIN_OPEN__' (기본 불가 슬롯 개방)
 let pending      = [];
 let currentRoom  = 'room3';
 let currentDay   = 'MON';
@@ -598,9 +607,10 @@ async function loadAll(manual = false) {
     const json = await apiCall({});
     const all  = (json.data || []).filter(r => r.id && r.id.trim() !== '');
 
-    // 관리자 잠금(nick==='__ADMIN_LOCK__')과 일반 예약 분리
+    // 관리자 잠금/개방/일반 예약 분리
     adminLocks   = all.filter(r => r.nick === '__ADMIN_LOCK__').map(r => ({ ...r, time: normalizeTime(r.time) }));
-    reservations = all.filter(r => r.nick !== '__ADMIN_LOCK__').map(r => ({ ...r, time: normalizeTime(r.time) }));
+    adminOpens   = all.filter(r => r.nick === '__ADMIN_OPEN__').map(r => ({ ...r, time: normalizeTime(r.time) }));
+    reservations = all.filter(r => r.nick !== '__ADMIN_LOCK__' && r.nick !== '__ADMIN_OPEN__').map(r => ({ ...r, time: normalizeTime(r.time) }));
 
     setSyncStatus('ok');
   } catch(e) {
@@ -633,6 +643,9 @@ function isMySlot(nick, room, day, time) {
 }
 function isAdminLocked(room, day, time) {
   return adminLocks.some(l => l.room===room && l.day===day && l.time===time);
+}
+function isAdminOpened(room, day, time) {
+  return adminOpens.some(o => o.room===room && o.day===day && o.time===time);
 }
 
 // ═══════════════════════════════════════
@@ -696,15 +709,19 @@ function renderGrid() {
     const isMine=isMySlot(nick,currentRoom,currentDay,t);
     const isPend=pending.some(s=>s.room===currentRoom&&s.day===currentDay&&s.time===t);
     const isLocked=isAdminLocked(currentRoom,currentDay,t);
+    const isOpened=isAdminOpened(currentRoom,currentDay,t); // 기본불가지만 관리자가 개방
+    const effectiveOk = baseOk || isOpened; // 실제 예약 가능 여부
+
     const row=document.createElement('div'); row.className='time-slot-row';
     const lbl=document.createElement('div'); lbl.className='ts-label'; lbl.textContent=t;
     const cell=document.createElement('div'); cell.className='ts-cell';
-    if      (isPend)           { cell.classList.add('selected');     cell.onclick=()=>deselect(currentRoom,currentDay,t); }
-    else if (isMine)           { cell.classList.add('my-res');       cell.title='내 예약'; }
-    else if (isLocked)         { cell.classList.add('admin-locked'); cell.title='관리자 잠금'; }
-    else if (!isOpen)          { cell.classList.add('locked');       cell.title='예약 창이 닫혀있습니다'; }
-    else if (!baseOk||taken)   { cell.classList.add('blocked');      cell.title=taken?'이미 예약된 시간':'예약 불가 시간'; }
-    else                       { cell.classList.add('avail');        cell.onclick=()=>selectSlot(currentRoom,currentDay,t); }
+    if      (isPend)              { cell.classList.add('selected');     cell.onclick=()=>deselect(currentRoom,currentDay,t); }
+    else if (isMine)              { cell.classList.add('my-res');       cell.title='내 예약'; }
+    else if (isLocked)            { cell.classList.add('admin-locked'); cell.title='관리자 잠금'; }
+    else if (!isOpen)             { cell.classList.add('locked');       cell.title='예약 창이 닫혀있습니다'; }
+    else if (!effectiveOk||taken) { cell.classList.add('blocked');      cell.title=taken?'이미 예약된 시간':'예약 불가 시간'; }
+    else if (isOpened&&!taken)    { cell.classList.add('admin-opened'); cell.title='관리자 개방 시간'; cell.onclick=()=>selectSlot(currentRoom,currentDay,t); }
+    else                          { cell.classList.add('avail');        cell.onclick=()=>selectSlot(currentRoom,currentDay,t); }
     row.appendChild(lbl); row.appendChild(cell); container.appendChild(row);
   });
 }
@@ -753,7 +770,8 @@ async function submitBooking() {
   if (!nick||!pending.length) return;
   for (const s of pending) {
     const ti=TIMES.indexOf(s.time);
-    if (!BASE[s.room][s.day][ti]||isAdminLocked(s.room,s.day,s.time)) { showAlert('❌','예약 불가','선택한 시간은 예약할 수 없습니다.'); return; }
+    const effectiveOk = BASE[s.room][s.day][ti]===1 || isAdminOpened(s.room,s.day,s.time);
+    if (!effectiveOk||isAdminLocked(s.room,s.day,s.time)) { showAlert('❌','예약 불가','선택한 시간은 예약할 수 없습니다.'); return; }
     if (isSlotTaken(s.room,s.day,s.time)) { showAlert('❌','예약 마감',`이미 예약된 시간입니다.<br>새로고침 후 다시 선택해주세요.`); await loadAll(); return; }
   }
   const btn=document.getElementById('submitBtn'); btn.disabled=true; btn.textContent='저장 중...';
@@ -821,10 +839,11 @@ function openEdit(id,nick) {
   document.getElementById('editConfirmBtn').onclick=()=>confirmEdit(r);
   const grid=document.getElementById('editGrid'); grid.innerHTML='';
   TIMES.forEach((t,ti)=>{
-    const baseOk=BASE[r.room][r.day][ti]===1, taken=isSlotTaken(r.room,r.day,t,id), locked=isAdminLocked(r.room,r.day,t), isCur=t===r.time;
+    const baseOk=BASE[r.room][r.day][ti]===1, opened=isAdminOpened(r.room,r.day,t), taken=isSlotTaken(r.room,r.day,t,id), locked=isAdminLocked(r.room,r.day,t), isCur=t===r.time;
+    const effectiveOk = baseOk || opened;
     const btn=document.createElement('button'); btn.className='edit-slot'; btn.textContent=t;
     if (isCur) { btn.classList.add('current'); btn.disabled=true; }
-    else if (!baseOk||taken||locked) { btn.classList.add('blocked'); btn.disabled=true; }
+    else if (!effectiveOk||taken||locked) { btn.classList.add('blocked'); btn.disabled=true; }
     else { btn.classList.add('avail'); btn.onclick=()=>pickEditTime(t,grid,btn); }
     grid.appendChild(btn);
   });
@@ -887,6 +906,7 @@ function renderAdminPanel() {
   document.getElementById('statRoom3').textContent  = reservations.filter(r=>r.room==='room3').length;
   document.getElementById('statRoom4').textContent  = reservations.filter(r=>r.room==='room4').length;
   document.getElementById('statLocked').textContent = adminLocks.length;
+  document.getElementById('statOpened').textContent = adminOpens.length;
 
   // 요일 탭
   document.getElementById('adminDayTabs').innerHTML = DAYS.map(d =>
@@ -910,10 +930,12 @@ function renderAdminGrid() {
   const container=document.getElementById('adminSlots'); container.innerHTML='';
 
   TIMES.forEach((t,ti)=>{
-    const baseOk   = BASE[adminRoom][adminDay][ti]===1;
-    const res      = reservations.find(r=>r.room===adminRoom&&r.day===adminDay&&r.time===t);
-    const locked   = isAdminLocked(adminRoom,adminDay,t);
-    const lockEntry= adminLocks.find(l=>l.room===adminRoom&&l.day===adminDay&&l.time===t);
+    const baseOk    = BASE[adminRoom][adminDay][ti]===1;
+    const res       = reservations.find(r=>r.room===adminRoom&&r.day===adminDay&&r.time===t);
+    const locked    = isAdminLocked(adminRoom,adminDay,t);
+    const opened    = isAdminOpened(adminRoom,adminDay,t);
+    const lockEntry = adminLocks.find(l=>l.room===adminRoom&&l.day===adminDay&&l.time===t);
+    const openEntry = adminOpens.find(o=>o.room===adminRoom&&o.day===adminDay&&o.time===t);
 
     const row=document.createElement('div'); row.className='admin-slot-row';
     const lbl=document.createElement('div'); lbl.className='admin-slot-label'; lbl.textContent=t;
@@ -921,22 +943,42 @@ function renderAdminGrid() {
 
     let statusHtml='', actionHtml='';
 
-    if (!baseOk) {
+    if (locked) {
+      // 잠금 상태 (기본 가능/불가 무관)
+      const origin = baseOk ? '기본 가능' : '기본 불가';
+      statusHtml=`<span class="admin-slot-status status-admin-locked">🔒 관리자 잠금</span><span style="font-size:0.68rem;color:var(--text-light);margin-left:6px">(${origin})</span>`;
+      actionHtml=`<button class="admin-toggle-btn btn-unlock" onclick="adminUnlock('${lockEntry.id}')">잠금 해제</button>`;
+
+    } else if (!baseOk && opened) {
+      // 기본 불가지만 관리자가 개방
+      if (res) {
+        statusHtml=`<span class="admin-slot-status status-reserved">예약됨</span><span class="admin-slot-nick">${res.nick}</span><span style="font-size:0.65rem;color:var(--gold);margin-left:6px">🔓 개방 중</span>`;
+        actionHtml=`<button class="admin-toggle-btn btn-force-cancel" onclick="adminForceCancel('${res.id}','${res.nick}','${t}')">강제 취소</button>
+                    <button class="admin-toggle-btn btn-lock" onclick="adminCloseOpen('${openEntry.id}')">개방 취소</button>`;
+      } else {
+        statusHtml=`<span class="admin-slot-status status-admin-opened">🔓 관리자 개방</span>`;
+        actionHtml=`<button class="admin-toggle-btn btn-lock" onclick="adminCloseOpen('${openEntry.id}')">개방 취소</button>`;
+      }
+
+    } else if (!baseOk) {
+      // 기본 불가 (아직 개방 안 됨)
       statusHtml=`<span class="admin-slot-status status-base-blocked">기본 불가</span>`;
-      actionHtml='';
-    } else if (locked) {
-      statusHtml=`<span class="admin-slot-status status-admin-locked">🔒 관리자 잠금</span>`;
-      actionHtml=`<button class="admin-toggle-btn btn-unlock" onclick="adminUnlock('${lockEntry.id}','${adminRoom}','${adminDay}','${t}')">잠금 해제</button>`;
+      actionHtml=`<button class="admin-toggle-btn btn-unlock" onclick="adminOpen('${adminRoom}','${adminDay}','${t}')">개방하기</button>
+                  <button class="admin-toggle-btn btn-lock" onclick="adminLock('${adminRoom}','${adminDay}','${t}')">잠금</button>`;
+
     } else if (res) {
+      // 기본 가능 + 예약 있음
       statusHtml=`<span class="admin-slot-status status-reserved">예약됨</span><span class="admin-slot-nick">${res.nick}</span>`;
       actionHtml=`<button class="admin-toggle-btn btn-force-cancel" onclick="adminForceCancel('${res.id}','${res.nick}','${t}')">강제 취소</button>
                   <button class="admin-toggle-btn btn-lock" onclick="adminLock('${adminRoom}','${adminDay}','${t}')">잠금</button>`;
+
     } else {
+      // 기본 가능 + 예약 없음
       statusHtml=`<span class="admin-slot-status status-open">예약 가능</span>`;
       actionHtml=`<button class="admin-toggle-btn btn-lock" onclick="adminLock('${adminRoom}','${adminDay}','${t}')">잠금</button>`;
     }
 
-    cell.innerHTML=`<div class="admin-slot-info">${statusHtml}</div>${actionHtml}`;
+    cell.innerHTML=`<div class="admin-slot-info">${statusHtml}</div><div style="display:flex;gap:6px;flex-shrink:0">${actionHtml}</div>`;
     row.appendChild(lbl); row.appendChild(cell); container.appendChild(row);
   });
 }
@@ -962,21 +1004,35 @@ function renderAdminResTable() {
   }).join('');
 }
 
-// ── 관리자 잠금 / 해제 ──
+// ── 관리자 잠금 / 해제 / 개방 ──
 async function adminLock(room,day,time) {
   try {
     await apiAdd({ id:`lock_${Date.now()}_${Math.random().toString(36).slice(2,5)}`, nick:'__ADMIN_LOCK__', room, day, time, at:new Date().toISOString() });
-    await loadAll();
-    renderAdminPanel();
+    await loadAll(); renderAdminPanel();
   } catch(e) { showAlert('❌','오류','잠금 처리 중 오류가 발생했습니다.'); }
 }
 
 async function adminUnlock(lockId) {
   try {
     await apiDelete(lockId);
-    await loadAll();
-    renderAdminPanel();
+    await loadAll(); renderAdminPanel();
   } catch(e) { showAlert('❌','오류','잠금 해제 중 오류가 발생했습니다.'); }
+}
+
+// 기본 불가 슬롯을 개방
+async function adminOpen(room,day,time) {
+  try {
+    await apiAdd({ id:`open_${Date.now()}_${Math.random().toString(36).slice(2,5)}`, nick:'__ADMIN_OPEN__', room, day, time, at:new Date().toISOString() });
+    await loadAll(); renderAdminPanel();
+  } catch(e) { showAlert('❌','오류','개방 처리 중 오류가 발생했습니다.'); }
+}
+
+// 기본 불가 슬롯 개방 취소 (다시 불가로)
+async function adminCloseOpen(openId) {
+  try {
+    await apiDelete(openId);
+    await loadAll(); renderAdminPanel();
+  } catch(e) { showAlert('❌','오류','개방 취소 중 오류가 발생했습니다.'); }
 }
 
 async function adminForceCancel(id, nick, time) {
