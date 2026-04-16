@@ -7,243 +7,328 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <style>
 :root {
-  --rust: #8B3A2A;
-  --rust-dark: #6B2D1F;
-  --rust-mid: #A04535;
-  --rust-light: #C4674F;
-  --rust-pale: #E8C4BA;
-  --cream: #F7F1E8;
-  --cream-dark: #EDE3D5;
-  --cream-mid: #DDD0BC;
-  --pink-blocked: #C97A6A;
-  --pink-bg: #F2DDD9;
-  --text-dark: #2C1810;
-  --text-mid: #7A4535;
-  --text-light: #B07060;
-  --green: #3D7A52;
-  --green-bg: #EAF4EE;
-  --gold: #C8963A;
-  --white: #FFFDF9;
+  --rust: #8B3A2A; --rust-dark: #6B2D1F; --rust-mid: #A04535;
+  --rust-light: #C4674F; --rust-pale: #E8C4BA;
+  --cream: #F7F1E8; --cream-dark: #EDE3D5; --cream-mid: #DDD0BC;
+  --pink-blocked: #C97A6A; --pink-bg: #F2DDD9;
+  --text-dark: #2C1810; --text-mid: #7A4535; --text-light: #B07060;
+  --green: #3D7A52; --green-bg: #EAF4EE;
+  --gold: #C8963A; --white: #FFFDF9;
+  --admin: #2A3A8B; --admin-dark: #1F2D6B; --admin-pale: #BAC4E8; --admin-bg: #EEF0F8;
 }
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { background: var(--cream); font-family: 'Noto Sans KR', sans-serif; color: var(--text-dark); min-height: 100vh; }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--cream); font-family:'Noto Sans KR',sans-serif; color:var(--text-dark); min-height:100vh; }
 
-header { background: var(--rust-dark); position: relative; overflow: hidden; }
+/* ── HEADER ── */
+header { background:var(--rust-dark); position:relative; overflow:hidden; }
 .header-deco {
-  position: absolute; inset: 0;
-  background:
-    radial-gradient(ellipse 60% 80% at 90% 50%, rgba(196,103,79,0.25) 0%, transparent 70%),
+  position:absolute; inset:0;
+  background: radial-gradient(ellipse 60% 80% at 90% 50%, rgba(196,103,79,0.25) 0%, transparent 70%),
     repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(255,255,255,0.015) 20px, rgba(255,255,255,0.015) 21px);
 }
-.header-inner { position: relative; z-index: 1; padding: 28px 40px 0; }
-.header-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
-.brand-sub { font-size: 0.65rem; letter-spacing: 3px; color: var(--rust-pale); text-transform: uppercase; margin-bottom: 4px; font-weight: 500; }
-.brand-name { font-family: 'Bebas Neue', cursive; font-size: 3.2rem; color: white; letter-spacing: 3px; line-height: 1; }
-.brand-name em { color: var(--rust-pale); font-style: normal; }
-.header-date-block { text-align: right; }
-.header-date { font-size: 0.7rem; color: rgba(255,255,255,0.5); letter-spacing: 1px; }
-.booking-window-info { font-size: 0.72rem; color: var(--rust-pale); font-weight: 500; margin-top: 3px; }
-.tab-nav { display: flex; gap: 2px; margin-top: 24px; }
+.header-inner { position:relative; z-index:1; padding:28px 40px 0; }
+.header-row { display:flex; align-items:flex-end; justify-content:space-between; gap:20px; flex-wrap:wrap; }
+.brand-sub { font-size:0.65rem; letter-spacing:3px; color:var(--rust-pale); text-transform:uppercase; margin-bottom:4px; font-weight:500; }
+.brand-name { font-family:'Bebas Neue',cursive; font-size:3.2rem; color:white; letter-spacing:3px; line-height:1; }
+.brand-name em { color:var(--rust-pale); font-style:normal; }
+.header-date-block { text-align:right; }
+.header-date { font-size:0.7rem; color:rgba(255,255,255,0.5); letter-spacing:1px; }
+.booking-window-info { font-size:0.72rem; color:var(--rust-pale); font-weight:500; margin-top:3px; }
+.tab-nav { display:flex; gap:2px; margin-top:24px; flex-wrap:wrap; }
 .tab-btn {
-  padding: 12px 28px; background: rgba(255,255,255,0.08); border: none;
-  font-family: 'Bebas Neue', cursive; font-size: 1rem; letter-spacing: 1.5px;
-  color: rgba(255,255,255,0.5); cursor: pointer; border-radius: 10px 10px 0 0; transition: all 0.2s;
+  padding:12px 28px; background:rgba(255,255,255,0.08); border:none;
+  font-family:'Bebas Neue',cursive; font-size:1rem; letter-spacing:1.5px;
+  color:rgba(255,255,255,0.5); cursor:pointer; border-radius:10px 10px 0 0; transition:all 0.2s;
 }
-.tab-btn:hover { background: rgba(255,255,255,0.14); color: rgba(255,255,255,0.8); }
-.tab-btn.active { background: var(--cream); color: var(--rust-dark); font-weight: 700; }
+.tab-btn:hover { background:rgba(255,255,255,0.14); color:rgba(255,255,255,0.8); }
+.tab-btn.active { background:var(--cream); color:var(--rust-dark); font-weight:700; }
+.tab-btn.admin-tab { color:rgba(180,200,255,0.6); }
+.tab-btn.admin-tab.active { background:var(--admin-bg); color:var(--admin-dark); }
 
+/* ── LOADING ── */
 .loading-overlay {
-  position: fixed; inset: 0; background: rgba(107,45,31,0.88);
-  z-index: 999; display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 16px; backdrop-filter: blur(4px);
+  position:fixed; inset:0; background:rgba(107,45,31,0.88);
+  z-index:999; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:16px; backdrop-filter:blur(4px);
 }
-.loading-overlay.hide { display: none; }
-.spinner { width: 44px; height: 44px; border: 4px solid rgba(255,255,255,0.2); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
-.loading-text { color: white; font-size: 0.85rem; letter-spacing: 1px; }
+.loading-overlay.hide { display:none; }
+.spinner { width:44px; height:44px; border:4px solid rgba(255,255,255,0.2); border-top-color:white; border-radius:50%; animation:spin 0.8s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.loading-text { color:white; font-size:0.85rem; letter-spacing:1px; }
 
+/* ── SYNC BAR ── */
 .sync-bar {
-  background: var(--cream-dark); border-bottom: 1px solid var(--cream-mid);
-  padding: 7px 20px; display: flex; align-items: center; justify-content: space-between;
-  font-size: 0.72rem; color: var(--text-light); flex-wrap: wrap; gap: 8px;
+  background:var(--cream-dark); border-bottom:1px solid var(--cream-mid);
+  padding:7px 20px; display:flex; align-items:center; justify-content:space-between;
+  font-size:0.72rem; color:var(--text-light); flex-wrap:wrap; gap:8px;
 }
-.sync-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); display: inline-block; margin-right: 5px; animation: pulse 2s infinite; }
-.sync-dot.err     { background: #e05555; animation: none; }
-.sync-dot.syncing { background: var(--gold); animation: none; }
+.sync-dot { width:7px; height:7px; border-radius:50%; background:var(--green); display:inline-block; margin-right:5px; animation:pulse 2s infinite; }
+.sync-dot.err { background:#e05555; animation:none; }
+.sync-dot.syncing { background:var(--gold); animation:none; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 .refresh-btn {
-  padding: 4px 12px; border-radius: 6px; border: 1px solid var(--cream-mid);
-  background: var(--white); font-size: 0.7rem; font-weight: 700; color: var(--text-mid);
-  cursor: pointer; transition: all 0.2s;
+  padding:4px 12px; border-radius:6px; border:1px solid var(--cream-mid);
+  background:var(--white); font-size:0.7rem; font-weight:700; color:var(--text-mid);
+  cursor:pointer; transition:all 0.2s;
 }
-.refresh-btn:hover { background: var(--rust); color: white; border-color: var(--rust); }
+.refresh-btn:hover { background:var(--rust); color:white; border-color:var(--rust); }
 
-main { max-width: 1060px; margin: 0 auto; padding: 28px 20px 80px; }
-.panel { display: none; }
-.panel.active { display: block; animation: fadeUp 0.3s ease; }
+/* ── MAIN ── */
+main { max-width:1060px; margin:0 auto; padding:28px 20px 80px; }
+.panel { display:none; }
+.panel.active { display:block; animation:fadeUp 0.3s ease; }
 @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
 
-.nick-bar {
-  display: flex; align-items: center; gap: 12px;
-  background: var(--white); border: 1.5px solid var(--cream-dark);
-  border-radius: 14px; padding: 16px 22px; margin-bottom: 20px; flex-wrap: wrap;
-}
-.nick-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 1px; color: var(--text-light); text-transform: uppercase; white-space: nowrap; }
-.nick-input {
-  flex: 1; min-width: 140px; padding: 9px 14px;
-  border: 1.5px solid var(--cream-dark); border-radius: 8px;
-  font-family: 'Noto Sans KR', sans-serif; font-size: 0.88rem;
-  color: var(--text-dark); background: var(--cream); outline: none; transition: border-color 0.2s, background 0.2s;
-}
-.nick-input:focus { border-color: var(--rust-light); background: white; }
-.nick-input.error { border-color: var(--rust); animation: shake 0.3s; }
+/* ── NICK BAR ── */
+.nick-bar { display:flex; align-items:center; gap:12px; background:var(--white); border:1.5px solid var(--cream-dark); border-radius:14px; padding:16px 22px; margin-bottom:20px; flex-wrap:wrap; }
+.nick-label { font-size:0.72rem; font-weight:700; letter-spacing:1px; color:var(--text-light); text-transform:uppercase; white-space:nowrap; }
+.nick-input { flex:1; min-width:140px; padding:9px 14px; border:1.5px solid var(--cream-dark); border-radius:8px; font-family:'Noto Sans KR',sans-serif; font-size:0.88rem; color:var(--text-dark); background:var(--cream); outline:none; transition:border-color 0.2s, background 0.2s; }
+.nick-input:focus { border-color:var(--rust-light); background:white; }
+.nick-input.error { border-color:var(--rust); animation:shake 0.3s; }
 @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
-.quota-pill {
-  padding: 6px 14px; border-radius: 20px; font-size: 0.72rem; font-weight: 700;
-  background: var(--cream-dark); color: var(--text-mid); white-space: nowrap; transition: all 0.3s;
-}
-.quota-pill.warn { background: #FEF0E7; color: var(--gold); }
-.quota-pill.full { background: var(--rust); color: white; }
+.quota-pill { padding:6px 14px; border-radius:20px; font-size:0.72rem; font-weight:700; background:var(--cream-dark); color:var(--text-mid); white-space:nowrap; transition:all 0.3s; }
+.quota-pill.warn { background:#FEF0E7; color:var(--gold); }
+.quota-pill.full { background:var(--rust); color:white; }
 
-.window-notice {
-  background: linear-gradient(135deg, #FEF6EE, #FDE9DF);
-  border: 1.5px solid var(--rust-pale); border-radius: 12px;
-  padding: 14px 20px; margin-bottom: 20px;
-  display: flex; align-items: flex-start; gap: 12px;
-  font-size: 0.8rem; color: var(--rust-mid); line-height: 1.7;
-}
-.wn-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 1px; }
-.window-notice strong { font-weight: 700; color: var(--rust-dark); }
+/* ── WINDOW NOTICE ── */
+.window-notice { background:linear-gradient(135deg,#FEF6EE,#FDE9DF); border:1.5px solid var(--rust-pale); border-radius:12px; padding:14px 20px; margin-bottom:20px; display:flex; align-items:flex-start; gap:12px; font-size:0.8rem; color:var(--rust-mid); line-height:1.7; }
+.wn-icon { font-size:1.3rem; flex-shrink:0; margin-top:1px; }
+.window-notice strong { font-weight:700; color:var(--rust-dark); }
 
-.room-tabs { display: flex; gap: 8px; margin-bottom: 16px; }
-.room-tab {
-  padding: 9px 24px; border-radius: 9px; border: 1.5px solid var(--cream-mid);
-  background: var(--white); font-family: 'Bebas Neue', cursive; font-size: 1.05rem;
-  letter-spacing: 1px; color: var(--text-mid); cursor: pointer; transition: all 0.2s;
-}
-.room-tab:hover { border-color: var(--rust-light); color: var(--rust); }
-.room-tab.active { background: var(--rust); border-color: var(--rust); color: white; }
+/* ── ROOM/DAY TABS ── */
+.room-tabs { display:flex; gap:8px; margin-bottom:16px; }
+.room-tab { padding:9px 24px; border-radius:9px; border:1.5px solid var(--cream-mid); background:var(--white); font-family:'Bebas Neue',cursive; font-size:1.05rem; letter-spacing:1px; color:var(--text-mid); cursor:pointer; transition:all 0.2s; }
+.room-tab:hover { border-color:var(--rust-light); color:var(--rust); }
+.room-tab.active { background:var(--rust); border-color:var(--rust); color:white; }
+.day-tabs { display:flex; gap:6px; margin-bottom:18px; flex-wrap:wrap; }
+.day-tab { padding:8px 14px; border-radius:8px; border:1.5px solid var(--cream-mid); background:var(--white); font-size:0.75rem; font-weight:700; color:var(--text-mid); cursor:pointer; transition:all 0.2s; position:relative; }
+.day-tab:hover { border-color:var(--rust-light); color:var(--rust); }
+.day-tab.active { background:var(--rust-dark); border-color:var(--rust-dark); color:white; }
+.day-tab.bookable { border-color:var(--green); color:var(--green); background:var(--green-bg); }
+.day-tab.bookable.active { background:var(--green); border-color:var(--green); color:white; }
+.open-dot { position:absolute; top:-4px; right:-4px; width:8px; height:8px; background:var(--green); border-radius:50%; border:2px solid var(--cream); }
 
-.day-tabs { display: flex; gap: 6px; margin-bottom: 18px; flex-wrap: wrap; }
-.day-tab {
-  padding: 8px 14px; border-radius: 8px; border: 1.5px solid var(--cream-mid);
-  background: var(--white); font-size: 0.75rem; font-weight: 700;
-  color: var(--text-mid); cursor: pointer; transition: all 0.2s; position: relative;
-}
-.day-tab:hover { border-color: var(--rust-light); color: var(--rust); }
-.day-tab.active { background: var(--rust-dark); border-color: var(--rust-dark); color: white; }
-.day-tab.bookable { border-color: var(--green); color: var(--green); background: var(--green-bg); }
-.day-tab.bookable.active { background: var(--green); border-color: var(--green); color: white; }
-.open-dot { position: absolute; top:-4px; right:-4px; width:8px; height:8px; background:var(--green); border-radius:50%; border:2px solid var(--cream); }
+/* ── LEGEND ── */
+.legend { display:flex; gap:16px; margin-bottom:14px; flex-wrap:wrap; }
+.legend-item { display:flex; align-items:center; gap:6px; font-size:0.72rem; color:var(--text-light); }
+.leg-dot { width:14px; height:14px; border-radius:4px; flex-shrink:0; }
+.ld-ok   { background:var(--green-bg); border:1.5px solid var(--green); }
+.ld-no   { background:var(--pink-bg); border:1.5px solid var(--pink-blocked); }
+.ld-sel  { background:var(--rust); }
+.ld-my   { background:linear-gradient(135deg,#FEF0D8,#FDDBA8); border:1.5px solid var(--gold); }
+.ld-lock { background:var(--cream-dark); border:1.5px solid var(--cream-mid); }
+.ld-admin-lock { background:#E8EAF6; border:1.5px solid var(--admin); }
 
-.legend { display: flex; gap: 16px; margin-bottom: 14px; flex-wrap: wrap; }
-.legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.72rem; color: var(--text-light); }
-.leg-dot { width: 14px; height: 14px; border-radius: 4px; flex-shrink: 0; }
-.ld-ok   { background: var(--green-bg); border: 1.5px solid var(--green); }
-.ld-no   { background: var(--pink-bg); border: 1.5px solid var(--pink-blocked); }
-.ld-sel  { background: var(--rust); }
-.ld-my   { background: linear-gradient(135deg,#FEF0D8,#FDDBA8); border:1.5px solid var(--gold); }
-.ld-lock { background: var(--cream-dark); border: 1.5px solid var(--cream-mid); }
+/* ── TIME GRID ── */
+.time-grid { background:var(--white); border-radius:14px; border:1.5px solid var(--cream-dark); overflow:hidden; margin-bottom:22px; }
+.time-grid-header { background:var(--rust); display:grid; grid-template-columns:72px 1fr; padding:12px 0; }
+.tg-head-time { padding:0 12px; font-size:0.68rem; font-weight:700; letter-spacing:1.5px; color:rgba(255,255,255,0.5); display:flex; align-items:center; }
+.tg-head-day { font-size:0.82rem; font-weight:700; letter-spacing:1px; color:white; display:flex; align-items:center; padding:0 16px; }
+.time-slot-row { display:grid; grid-template-columns:72px 1fr; border-bottom:1px solid var(--cream-dark); min-height:56px; }
+.time-slot-row:last-child { border-bottom:none; }
+.ts-label { display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:700; color:var(--text-mid); background:var(--cream); border-right:1px solid var(--cream-dark); }
+.ts-cell { display:flex; align-items:center; justify-content:center; font-size:1.15rem; transition:all 0.15s; cursor:default; position:relative; }
+.ts-cell.avail { background:var(--green-bg); cursor:pointer; }
+.ts-cell.avail:hover { background:#D2EAD9; transform:scale(0.96); }
+.ts-cell.avail::after { content:'○'; color:var(--green); font-weight:700; }
+.ts-cell.blocked { background:var(--pink-bg); }
+.ts-cell.blocked::after { content:'×'; color:var(--pink-blocked); font-weight:700; }
+.ts-cell.locked { background:var(--cream); }
+.ts-cell.locked::after { content:'–'; color:var(--cream-mid); font-size:1.4rem; }
+.ts-cell.selected { background:var(--rust); cursor:pointer; }
+.ts-cell.selected:hover { background:var(--rust-dark); transform:scale(0.96); }
+.ts-cell.selected::after { content:'✓'; color:white; font-weight:900; }
+.ts-cell.my-res { background:linear-gradient(135deg,#FEF0D8,#FDDBA8); cursor:default; }
+.ts-cell.my-res::after { content:'★'; color:var(--gold); }
+/* 관리자가 잠근 슬롯 */
+.ts-cell.admin-locked { background:#E8EAF6; cursor:default; }
+.ts-cell.admin-locked::after { content:'🔒'; font-size:0.9rem; }
 
-.time-grid { background: var(--white); border-radius: 14px; border: 1.5px solid var(--cream-dark); overflow: hidden; margin-bottom: 22px; }
-.time-grid-header { background: var(--rust); display: grid; grid-template-columns: 72px 1fr; padding: 12px 0; }
-.tg-head-time { padding: 0 12px; font-size: 0.68rem; font-weight: 700; letter-spacing: 1.5px; color: rgba(255,255,255,0.5); display: flex; align-items: center; }
-.tg-head-day { font-size: 0.82rem; font-weight: 700; letter-spacing: 1px; color: white; display: flex; align-items: center; padding: 0 16px; }
-.time-slot-row { display: grid; grid-template-columns: 72px 1fr; border-bottom: 1px solid var(--cream-dark); min-height: 56px; }
-.time-slot-row:last-child { border-bottom: none; }
-.ts-label { display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; color: var(--text-mid); background: var(--cream); border-right: 1px solid var(--cream-dark); }
-.ts-cell { display: flex; align-items: center; justify-content: center; font-size: 1.15rem; transition: all 0.15s; cursor: default; position: relative; }
-.ts-cell.avail { background: var(--green-bg); cursor: pointer; }
-.ts-cell.avail:hover { background: #D2EAD9; transform: scale(0.96); }
-.ts-cell.avail::after { content: '○'; color: var(--green); font-weight: 700; }
-.ts-cell.blocked { background: var(--pink-bg); }
-.ts-cell.blocked::after { content: '×'; color: var(--pink-blocked); font-weight: 700; }
-.ts-cell.locked { background: var(--cream); }
-.ts-cell.locked::after { content: '–'; color: var(--cream-mid); font-size: 1.4rem; }
-.ts-cell.selected { background: var(--rust); cursor: pointer; }
-.ts-cell.selected:hover { background: var(--rust-dark); transform: scale(0.96); }
-.ts-cell.selected::after { content: '✓'; color: white; font-weight: 900; }
-.ts-cell.my-res { background: linear-gradient(135deg,#FEF0D8,#FDDBA8); cursor: default; }
-.ts-cell.my-res::after { content: '★'; color: var(--gold); }
-
-.chip-section { background: var(--white); border: 1.5px solid var(--cream-dark); border-radius: 14px; padding: 18px 22px; margin-bottom: 20px; }
-.chip-section-title { font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-light); margin-bottom: 12px; }
-.chip-list { display: flex; flex-wrap: wrap; gap: 8px; min-height: 34px; align-items: center; }
-.chip { background: var(--rust); color: white; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 500; display: flex; align-items: center; gap: 8px; animation: chipIn 0.2s ease; }
+/* ── CHIPS ── */
+.chip-section { background:var(--white); border:1.5px solid var(--cream-dark); border-radius:14px; padding:18px 22px; margin-bottom:20px; }
+.chip-section-title { font-size:0.68rem; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--text-light); margin-bottom:12px; }
+.chip-list { display:flex; flex-wrap:wrap; gap:8px; min-height:34px; align-items:center; }
+.chip { background:var(--rust); color:white; padding:6px 12px; border-radius:20px; font-size:0.75rem; font-weight:500; display:flex; align-items:center; gap:8px; animation:chipIn 0.2s ease; }
 @keyframes chipIn { from{transform:scale(0.7);opacity:0} to{transform:scale(1);opacity:1} }
-.chip-x { cursor: pointer; font-size: 1rem; opacity: 0.7; }
-.chip-x:hover { opacity: 1; }
-.chip-empty { font-size: 0.78rem; color: var(--text-light); opacity: 0.6; font-style: italic; }
+.chip-x { cursor:pointer; font-size:1rem; opacity:0.7; }
+.chip-x:hover { opacity:1; }
+.chip-empty { font-size:0.78rem; color:var(--text-light); opacity:0.6; font-style:italic; }
 
-.submit-btn {
-  width: 100%; padding: 17px; background: var(--rust); color: white; border: none;
-  border-radius: 12px; font-family: 'Bebas Neue', cursive; font-size: 1.4rem;
-  letter-spacing: 2px; cursor: pointer; transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
-  box-shadow: 0 4px 16px rgba(139,58,42,0.25);
+/* ── SUBMIT ── */
+.submit-btn { width:100%; padding:17px; background:var(--rust); color:white; border:none; border-radius:12px; font-family:'Bebas Neue',cursive; font-size:1.4rem; letter-spacing:2px; cursor:pointer; transition:background 0.2s, transform 0.1s, box-shadow 0.2s; box-shadow:0 4px 16px rgba(139,58,42,0.25); }
+.submit-btn:hover:not(:disabled) { background:var(--rust-dark); transform:translateY(-2px); box-shadow:0 8px 24px rgba(139,58,42,0.3); }
+.submit-btn:disabled { background:var(--cream-mid); color:var(--text-light); cursor:not-allowed; box-shadow:none; }
+
+/* ── MY PANEL ── */
+.my-panel-header { margin-bottom:24px; }
+.my-panel-title { font-family:'Bebas Neue',cursive; font-size:2rem; color:var(--rust-dark); letter-spacing:1.5px; }
+.my-panel-sub { font-size:0.8rem; color:var(--text-light); margin-top:2px; }
+.search-bar { display:flex; gap:10px; margin-bottom:24px; }
+.search-input { flex:1; padding:12px 18px; border:2px solid var(--cream-mid); border-radius:10px; font-family:'Noto Sans KR',sans-serif; font-size:0.9rem; color:var(--text-dark); background:var(--white); outline:none; transition:border-color 0.2s; }
+.search-input:focus { border-color:var(--rust-light); }
+.search-btn { padding:12px 24px; background:var(--rust); color:white; border:none; border-radius:10px; font-family:'Bebas Neue',cursive; font-size:1rem; letter-spacing:1px; cursor:pointer; transition:background 0.2s; white-space:nowrap; }
+.search-btn:hover { background:var(--rust-dark); }
+.res-empty { text-align:center; padding:60px 20px; color:var(--text-light); }
+.res-empty-icon { font-size:3rem; margin-bottom:12px; }
+.res-empty-text { font-size:0.85rem; line-height:1.7; }
+.res-card { background:var(--white); border:1.5px solid var(--cream-dark); border-radius:14px; padding:20px 24px; margin-bottom:12px; display:flex; align-items:center; gap:18px; flex-wrap:wrap; animation:fadeUp 0.2s ease; transition:box-shadow 0.2s; }
+.res-card:hover { box-shadow:0 4px 20px rgba(139,58,42,0.1); }
+.res-room-badge { font-family:'Bebas Neue',cursive; font-size:1.5rem; color:var(--rust-dark); letter-spacing:1.5px; min-width:68px; background:var(--cream); border-radius:10px; padding:8px 10px; text-align:center; line-height:1.1; }
+.res-room-badge small { display:block; font-size:0.55rem; letter-spacing:1px; color:var(--text-light); font-family:'Noto Sans KR',sans-serif; font-weight:500; }
+.res-info { flex:1; }
+.res-day { font-size:0.7rem; font-weight:700; letter-spacing:1.5px; color:var(--text-light); margin-bottom:3px; }
+.res-time { font-size:1.05rem; font-weight:700; color:var(--text-dark); }
+.res-time span { font-size:0.78rem; font-weight:400; color:var(--text-light); margin-left:4px; }
+.res-status { display:inline-block; margin-top:5px; font-size:0.68rem; padding:3px 10px; border-radius:20px; font-weight:700; background:var(--green-bg); color:var(--green); }
+.res-window-badge { display:inline-block; margin-left:6px; font-size:0.65rem; padding:3px 9px; border-radius:20px; font-weight:600; background:var(--green-bg); color:var(--green); border:1px solid var(--green); }
+.res-window-closed { background:var(--cream-dark); color:var(--text-light); border-color:var(--cream-mid); }
+.res-actions { display:flex; gap:8px; }
+.action-btn { padding:8px 16px; border-radius:8px; border:1.5px solid var(--cream-mid); background:var(--white); font-size:0.75rem; font-weight:700; cursor:pointer; transition:all 0.2s; }
+.action-btn.edit { color:var(--rust-mid); border-color:var(--rust-pale); }
+.action-btn.edit:hover:not(:disabled) { background:var(--rust); color:white; border-color:var(--rust); }
+.action-btn.cancel-btn { color:var(--text-light); }
+.action-btn.cancel-btn:hover:not(:disabled) { background:var(--pink-bg); border-color:var(--pink-blocked); color:var(--rust-dark); }
+.action-btn:disabled { opacity:0.35; cursor:not-allowed; }
+
+/* ══════════════════════════════════
+   ADMIN PANEL
+══════════════════════════════════ */
+.admin-login-wrap {
+  max-width:340px; margin:60px auto 0; text-align:center;
 }
-.submit-btn:hover:not(:disabled) { background: var(--rust-dark); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(139,58,42,0.3); }
-.submit-btn:disabled { background: var(--cream-mid); color: var(--text-light); cursor: not-allowed; box-shadow: none; }
+.admin-login-icon { font-size:3rem; margin-bottom:16px; }
+.admin-login-title { font-family:'Bebas Neue',cursive; font-size:2rem; color:var(--admin-dark); letter-spacing:1.5px; margin-bottom:6px; }
+.admin-login-sub { font-size:0.8rem; color:var(--text-light); margin-bottom:28px; }
+.pin-display {
+  display:flex; justify-content:center; gap:12px; margin-bottom:24px;
+}
+.pin-dot {
+  width:18px; height:18px; border-radius:50%;
+  border:2px solid var(--admin); background:transparent;
+  transition:background 0.2s;
+}
+.pin-dot.filled { background:var(--admin); }
+.pin-dot.error { border-color:var(--rust); background:var(--rust); animation:shake 0.4s; }
+.numpad {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:10px;
+  max-width:240px; margin:0 auto;
+}
+.num-btn {
+  padding:16px; border-radius:12px; border:1.5px solid var(--cream-mid);
+  background:var(--white); font-family:'Bebas Neue',cursive; font-size:1.4rem;
+  color:var(--text-dark); cursor:pointer; transition:all 0.15s;
+}
+.num-btn:hover { background:var(--admin-bg); border-color:var(--admin); color:var(--admin-dark); transform:scale(0.96); }
+.num-btn:active { transform:scale(0.90); }
+.num-btn.del { color:var(--rust-mid); font-size:1rem; }
 
-.my-panel-header { margin-bottom: 24px; }
-.my-panel-title { font-family: 'Bebas Neue', cursive; font-size: 2rem; color: var(--rust-dark); letter-spacing: 1.5px; }
-.my-panel-sub { font-size: 0.8rem; color: var(--text-light); margin-top: 2px; }
-.search-bar { display: flex; gap: 10px; margin-bottom: 24px; }
-.search-input { flex: 1; padding: 12px 18px; border: 2px solid var(--cream-mid); border-radius: 10px; font-family: 'Noto Sans KR', sans-serif; font-size: 0.9rem; color: var(--text-dark); background: var(--white); outline: none; transition: border-color 0.2s; }
-.search-input:focus { border-color: var(--rust-light); }
-.search-btn { padding: 12px 24px; background: var(--rust); color: white; border: none; border-radius: 10px; font-family: 'Bebas Neue', cursive; font-size: 1rem; letter-spacing: 1px; cursor: pointer; transition: background 0.2s; white-space: nowrap; }
-.search-btn:hover { background: var(--rust-dark); }
-.res-empty { text-align: center; padding: 60px 20px; color: var(--text-light); }
-.res-empty-icon { font-size: 3rem; margin-bottom: 12px; }
-.res-empty-text { font-size: 0.85rem; line-height: 1.7; }
-.res-card { background: var(--white); border: 1.5px solid var(--cream-dark); border-radius: 14px; padding: 20px 24px; margin-bottom: 12px; display: flex; align-items: center; gap: 18px; flex-wrap: wrap; animation: fadeUp 0.2s ease; transition: box-shadow 0.2s; }
-.res-card:hover { box-shadow: 0 4px 20px rgba(139,58,42,0.1); }
-.res-room-badge { font-family: 'Bebas Neue', cursive; font-size: 1.5rem; color: var(--rust-dark); letter-spacing: 1.5px; min-width: 68px; background: var(--cream); border-radius: 10px; padding: 8px 10px; text-align: center; line-height: 1.1; }
-.res-room-badge small { display: block; font-size: 0.55rem; letter-spacing: 1px; color: var(--text-light); font-family: 'Noto Sans KR', sans-serif; font-weight: 500; }
-.res-info { flex: 1; }
-.res-day { font-size: 0.7rem; font-weight: 700; letter-spacing: 1.5px; color: var(--text-light); margin-bottom: 3px; }
-.res-time { font-size: 1.05rem; font-weight: 700; color: var(--text-dark); }
-.res-time span { font-size: 0.78rem; font-weight: 400; color: var(--text-light); margin-left: 4px; }
-.res-status { display: inline-block; margin-top: 5px; font-size: 0.68rem; padding: 3px 10px; border-radius: 20px; font-weight: 700; background: var(--green-bg); color: var(--green); }
-.res-window-badge { display: inline-block; margin-left: 6px; font-size: 0.65rem; padding: 3px 9px; border-radius: 20px; font-weight: 600; background: var(--green-bg); color: var(--green); border: 1px solid var(--green); }
-.res-window-closed { background: var(--cream-dark); color: var(--text-light); border-color: var(--cream-mid); }
-.res-actions { display: flex; gap: 8px; }
-.action-btn { padding: 8px 16px; border-radius: 8px; border: 1.5px solid var(--cream-mid); background: var(--white); font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
-.action-btn.edit { color: var(--rust-mid); border-color: var(--rust-pale); }
-.action-btn.edit:hover:not(:disabled) { background: var(--rust); color: white; border-color: var(--rust); }
-.action-btn.cancel-btn { color: var(--text-light); }
-.action-btn.cancel-btn:hover:not(:disabled) { background: var(--pink-bg); border-color: var(--pink-blocked); color: var(--rust-dark); }
-.action-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+/* 관리자 패널 내용 */
+.admin-header-bar {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:24px; flex-wrap:wrap; gap:12px;
+}
+.admin-title { font-family:'Bebas Neue',cursive; font-size:2rem; color:var(--admin-dark); letter-spacing:1.5px; }
+.admin-logout-btn {
+  padding:8px 18px; border-radius:8px; border:1.5px solid var(--admin-pale);
+  background:var(--white); font-size:0.75rem; font-weight:700; color:var(--admin);
+  cursor:pointer; transition:all 0.2s;
+}
+.admin-logout-btn:hover { background:var(--admin); color:white; }
 
-.overlay { display: none; position: fixed; inset: 0; background: rgba(44,24,16,0.65); z-index: 300; align-items: center; justify-content: center; backdrop-filter: blur(3px); padding: 16px; }
-.overlay.show { display: flex; }
-.modal { background: var(--cream); border-radius: 20px; padding: 36px 30px; max-width: 400px; width: 100%; text-align: center; animation: modalIn 0.25s ease; }
+/* 관리자 룸/요일 선택 */
+.admin-room-tabs { display:flex; gap:8px; margin-bottom:16px; }
+.admin-room-tab { padding:9px 24px; border-radius:9px; border:1.5px solid var(--cream-mid); background:var(--white); font-family:'Bebas Neue',cursive; font-size:1.05rem; letter-spacing:1px; color:var(--text-mid); cursor:pointer; transition:all 0.2s; }
+.admin-room-tab:hover { border-color:var(--admin); color:var(--admin); }
+.admin-room-tab.active { background:var(--admin); border-color:var(--admin); color:white; }
+.admin-day-tabs { display:flex; gap:6px; margin-bottom:18px; flex-wrap:wrap; }
+.admin-day-tab { padding:8px 14px; border-radius:8px; border:1.5px solid var(--cream-mid); background:var(--white); font-size:0.75rem; font-weight:700; color:var(--text-mid); cursor:pointer; transition:all 0.2s; }
+.admin-day-tab:hover { border-color:var(--admin); color:var(--admin); }
+.admin-day-tab.active { background:var(--admin-dark); border-color:var(--admin-dark); color:white; }
+
+/* 관리자 잠금 그리드 */
+.admin-grid-wrap { background:var(--white); border-radius:14px; border:1.5px solid var(--cream-dark); overflow:hidden; margin-bottom:28px; }
+.admin-grid-header { background:var(--admin); display:grid; grid-template-columns:72px 1fr; padding:12px 0; }
+.admin-tg-time { padding:0 12px; font-size:0.68rem; font-weight:700; letter-spacing:1.5px; color:rgba(255,255,255,0.5); display:flex; align-items:center; }
+.admin-tg-day { font-size:0.82rem; font-weight:700; color:white; display:flex; align-items:center; padding:0 16px; }
+.admin-slot-row { display:grid; grid-template-columns:72px 1fr; border-bottom:1px solid var(--cream-dark); min-height:56px; }
+.admin-slot-row:last-child { border-bottom:none; }
+.admin-slot-label { display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:700; color:var(--text-mid); background:var(--cream); border-right:1px solid var(--cream-dark); }
+.admin-slot-cell {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 20px; gap:12px; transition:background 0.15s;
+}
+.admin-slot-info { display:flex; align-items:center; gap:10px; flex:1; }
+.admin-slot-status {
+  font-size:0.72rem; font-weight:700; padding:3px 10px; border-radius:20px;
+}
+.status-open { background:var(--green-bg); color:var(--green); }
+.status-reserved { background:linear-gradient(135deg,#FEF0D8,#FDDBA8); color:var(--gold); }
+.status-base-blocked { background:var(--pink-bg); color:var(--pink-blocked); }
+.status-admin-locked { background:#E8EAF6; color:var(--admin); }
+.admin-slot-nick { font-size:0.8rem; font-weight:700; color:var(--text-dark); }
+.admin-toggle-btn {
+  padding:7px 16px; border-radius:8px; font-size:0.72rem; font-weight:700;
+  cursor:pointer; border:1.5px solid; transition:all 0.2s; white-space:nowrap;
+}
+.btn-lock { border-color:var(--admin-pale); color:var(--admin); background:var(--admin-bg); }
+.btn-lock:hover { background:var(--admin); color:white; }
+.btn-unlock { border-color:var(--green); color:var(--green); background:var(--green-bg); }
+.btn-unlock:hover { background:var(--green); color:white; }
+.btn-force-cancel { border-color:var(--rust-pale); color:var(--rust-mid); background:var(--white); }
+.btn-force-cancel:hover { background:var(--rust); color:white; border-color:var(--rust); }
+
+/* 관리자 예약 현황 테이블 */
+.admin-section-title { font-family:'Bebas Neue',cursive; font-size:1.4rem; color:var(--admin-dark); letter-spacing:1.5px; margin-bottom:14px; margin-top:8px; }
+.res-table-wrap { background:var(--white); border-radius:14px; border:1.5px solid var(--cream-dark); overflow:hidden; margin-bottom:20px; }
+.res-table { width:100%; border-collapse:collapse; font-size:0.8rem; }
+.res-table thead tr { background:var(--admin); }
+.res-table thead th { color:white; padding:12px 16px; text-align:left; font-weight:700; letter-spacing:0.5px; font-size:0.72rem; }
+.res-table tbody tr { border-bottom:1px solid var(--cream-dark); transition:background 0.15s; }
+.res-table tbody tr:last-child { border-bottom:none; }
+.res-table tbody tr:hover { background:var(--cream); }
+.res-table td { padding:12px 16px; color:var(--text-dark); }
+.res-table .nick-cell { font-weight:700; }
+.res-table .room-cell { font-family:'Bebas Neue',cursive; font-size:0.95rem; color:var(--admin-dark); letter-spacing:1px; }
+.admin-cancel-btn { padding:5px 12px; border-radius:6px; border:1.5px solid var(--rust-pale); background:var(--white); font-size:0.68rem; font-weight:700; color:var(--rust-mid); cursor:pointer; transition:all 0.2s; }
+.admin-cancel-btn:hover { background:var(--rust); color:white; border-color:var(--rust); }
+.stats-row { display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap; }
+.stat-card { background:var(--white); border:1.5px solid var(--cream-dark); border-radius:12px; padding:16px 20px; flex:1; min-width:120px; text-align:center; }
+.stat-num { font-family:'Bebas Neue',cursive; font-size:2rem; color:var(--admin-dark); line-height:1; }
+.stat-label { font-size:0.68rem; color:var(--text-light); margin-top:4px; font-weight:500; }
+
+/* ── MODALS ── */
+.overlay { display:none; position:fixed; inset:0; background:rgba(44,24,16,0.65); z-index:300; align-items:center; justify-content:center; backdrop-filter:blur(3px); padding:16px; }
+.overlay.show { display:flex; }
+.modal { background:var(--cream); border-radius:20px; padding:36px 30px; max-width:400px; width:100%; text-align:center; animation:modalIn 0.25s ease; }
 @keyframes modalIn { from{transform:scale(0.88) translateY(20px);opacity:0} to{transform:scale(1) translateY(0);opacity:1} }
-.modal-icon { font-size: 2.6rem; margin-bottom: 12px; }
-.modal-title { font-family: 'Bebas Neue', cursive; font-size: 1.7rem; color: var(--rust-dark); letter-spacing: 1px; margin-bottom: 10px; }
-.modal-body { font-size: 0.83rem; color: var(--text-mid); line-height: 1.8; margin-bottom: 18px; }
-.modal-detail { background: var(--white); border-radius: 10px; padding: 14px 18px; margin-bottom: 18px; text-align: left; font-size: 0.82rem; color: var(--text-dark); line-height: 2; }
-.modal-btns { display: flex; gap: 10px; }
-.modal-btn { flex: 1; padding: 12px; border-radius: 10px; border: none; font-family: 'Bebas Neue', cursive; font-size: 1rem; letter-spacing: 1px; cursor: pointer; transition: all 0.2s; }
-.modal-btn.primary { background: var(--rust); color: white; }
-.modal-btn.primary:hover { background: var(--rust-dark); }
-.modal-btn.secondary { background: var(--cream-dark); color: var(--text-mid); }
-.modal-btn.secondary:hover { background: var(--cream-mid); }
-.modal-btn.danger { background: var(--pink-bg); color: var(--rust-dark); border: 1.5px solid var(--rust-pale); }
-.modal-btn.danger:hover { background: var(--rust); color: white; border-color: var(--rust); }
-.edit-modal { max-width: 440px; }
-.edit-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 6px; margin-bottom: 16px; text-align: center; }
-.edit-slot { padding: 10px 4px; border-radius: 8px; border: 1.5px solid var(--cream-mid); background: var(--white); font-size: 0.72rem; font-weight: 700; cursor: pointer; transition: all 0.15s; color: var(--text-mid); }
-.edit-slot.avail { border-color: var(--green); color: var(--green); background: var(--green-bg); }
-.edit-slot.avail:hover { background: var(--green); color: white; }
-.edit-slot.pick { background: var(--rust); color: white; border-color: var(--rust); }
-.edit-slot.current { background: var(--cream-dark); color: var(--text-mid); cursor: default; }
-.edit-slot.blocked { background: var(--pink-bg); color: var(--pink-blocked); cursor: not-allowed; opacity: 0.55; }
+.modal-icon { font-size:2.6rem; margin-bottom:12px; }
+.modal-title { font-family:'Bebas Neue',cursive; font-size:1.7rem; color:var(--rust-dark); letter-spacing:1px; margin-bottom:10px; }
+.modal-body { font-size:0.83rem; color:var(--text-mid); line-height:1.8; margin-bottom:18px; }
+.modal-detail { background:var(--white); border-radius:10px; padding:14px 18px; margin-bottom:18px; text-align:left; font-size:0.82rem; color:var(--text-dark); line-height:2; }
+.modal-btns { display:flex; gap:10px; }
+.modal-btn { flex:1; padding:12px; border-radius:10px; border:none; font-family:'Bebas Neue',cursive; font-size:1rem; letter-spacing:1px; cursor:pointer; transition:all 0.2s; }
+.modal-btn.primary { background:var(--rust); color:white; }
+.modal-btn.primary:hover { background:var(--rust-dark); }
+.modal-btn.secondary { background:var(--cream-dark); color:var(--text-mid); }
+.modal-btn.secondary:hover { background:var(--cream-mid); }
+.modal-btn.danger { background:var(--pink-bg); color:var(--rust-dark); border:1.5px solid var(--rust-pale); }
+.modal-btn.danger:hover { background:var(--rust); color:white; border-color:var(--rust); }
+.edit-modal { max-width:440px; }
+.edit-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:6px; margin-bottom:16px; text-align:center; }
+.edit-slot { padding:10px 4px; border-radius:8px; border:1.5px solid var(--cream-mid); background:var(--white); font-size:0.72rem; font-weight:700; cursor:pointer; transition:all 0.15s; color:var(--text-mid); }
+.edit-slot.avail { border-color:var(--green); color:var(--green); background:var(--green-bg); }
+.edit-slot.avail:hover { background:var(--green); color:white; }
+.edit-slot.pick { background:var(--rust); color:white; border-color:var(--rust); }
+.edit-slot.current { background:var(--cream-dark); color:var(--text-mid); cursor:default; }
+.edit-slot.blocked { background:var(--pink-bg); color:var(--pink-blocked); cursor:not-allowed; opacity:0.55; }
 
 @media(max-width:600px){
-  .header-inner { padding: 20px 18px 0; }
-  .brand-name { font-size: 2.2rem; }
-  .tab-btn { padding: 10px 14px; font-size: 0.85rem; }
-  main { padding: 22px 12px 60px; }
+  .header-inner { padding:20px 18px 0; }
+  .brand-name { font-size:2.2rem; }
+  .tab-btn { padding:10px 12px; font-size:0.85rem; }
+  main { padding:22px 12px 60px; }
+  .admin-slot-cell { padding:0 10px; }
+  .res-table thead th, .res-table td { padding:10px 10px; }
 }
 </style>
 </head>
@@ -268,22 +353,25 @@ main { max-width: 1060px; margin: 0 auto; padding: 28px 20px 80px; }
       </div>
     </div>
     <div class="tab-nav">
-      <button class="tab-btn active" onclick="switchTab('book')" id="tabBook">🎤 예약하기</button>
-      <button class="tab-btn" onclick="switchTab('my')" id="tabMy">📋 내 예약 조회</button>
+      <button class="tab-btn active"  onclick="switchTab('book')" id="tabBook">🎤 예약하기</button>
+      <button class="tab-btn"         onclick="switchTab('my')"   id="tabMy">📋 내 예약 조회</button>
+      <button class="tab-btn admin-tab" onclick="switchTab('admin')" id="tabAdmin">🔐 관리자</button>
     </div>
   </div>
 </header>
 
 <div class="sync-bar">
   <div><span class="sync-dot" id="syncDot"></span><span id="syncText">연결 중...</span></div>
-  <button class="refresh-btn" onclick="loadReservations(true)">↻ 새로고침</button>
+  <button class="refresh-btn" onclick="loadAll(true)">↻ 새로고침</button>
 </div>
 
 <main>
+
+  <!-- ══ 예약하기 ══ -->
   <div class="panel active" id="panelBook">
     <div class="nick-bar">
       <span class="nick-label">닉네임</span>
-      <input class="nick-input" id="bookNick" type="text" placeholder="닉네임 입력 (예약자 식별용)" maxlength="20" />
+      <input class="nick-input" id="bookNick" type="text" placeholder="닉네임 입력 (예약자 식별용)" maxlength="20"/>
       <div class="quota-pill" id="quotaPill">선택 0 / 2</div>
     </div>
     <div class="window-notice">
@@ -296,15 +384,16 @@ main { max-width: 1060px; margin: 0 auto; padding: 28px 20px 80px; }
     </div>
     <div class="room-tabs">
       <button class="room-tab active" onclick="switchRoom('room3')" id="rtRoom3">ROOM 3</button>
-      <button class="room-tab" onclick="switchRoom('room4')" id="rtRoom4">ROOM 4</button>
+      <button class="room-tab"        onclick="switchRoom('room4')" id="rtRoom4">ROOM 4</button>
     </div>
     <div class="day-tabs" id="dayTabs"></div>
     <div class="legend">
       <div class="legend-item"><div class="leg-dot ld-ok"></div>예약 가능</div>
-      <div class="legend-item"><div class="leg-dot ld-no"></div>예약 불가 / 마감</div>
+      <div class="legend-item"><div class="leg-dot ld-no"></div>예약 불가/마감</div>
       <div class="legend-item"><div class="leg-dot ld-sel"></div>선택됨</div>
       <div class="legend-item"><div class="leg-dot ld-my"></div>내 예약</div>
       <div class="legend-item"><div class="leg-dot ld-lock"></div>예약 창 닫힘</div>
+      <div class="legend-item"><div class="leg-dot ld-admin-lock"></div>관리자 잠금</div>
     </div>
     <div class="time-grid">
       <div class="time-grid-header">
@@ -320,25 +409,104 @@ main { max-width: 1060px; margin: 0 auto; padding: 28px 20px 80px; }
     <button class="submit-btn" id="submitBtn" onclick="submitBooking()" disabled>예약 확정하기</button>
   </div>
 
+  <!-- ══ 내 예약 조회 ══ -->
   <div class="panel" id="panelMy">
     <div class="my-panel-header">
       <div class="my-panel-title">내 예약 조회</div>
       <div class="my-panel-sub">닉네임으로 예약을 확인하고 변경 또는 취소하세요</div>
     </div>
     <div class="search-bar">
-      <input class="search-input" id="searchNick" type="text" placeholder="닉네임 입력 후 엔터 또는 조회하기" maxlength="20" />
+      <input class="search-input" id="searchNick" type="text" placeholder="닉네임 입력 후 엔터 또는 조회하기" maxlength="20"/>
       <button class="search-btn" onclick="searchReservations()">조회하기</button>
     </div>
     <div id="myResList">
       <div class="res-empty"><div class="res-empty-icon">🎙️</div><div class="res-empty-text">닉네임을 입력하고 조회하세요</div></div>
     </div>
   </div>
+
+  <!-- ══ 관리자 ══ -->
+  <div class="panel" id="panelAdmin">
+
+    <!-- 로그인 전 -->
+    <div id="adminLogin">
+      <div class="admin-login-wrap">
+        <div class="admin-login-icon">🔐</div>
+        <div class="admin-login-title">관리자 인증</div>
+        <div class="admin-login-sub">4자리 숫자 암호를 입력하세요</div>
+        <div class="pin-display">
+          <div class="pin-dot" id="pd0"></div>
+          <div class="pin-dot" id="pd1"></div>
+          <div class="pin-dot" id="pd2"></div>
+          <div class="pin-dot" id="pd3"></div>
+        </div>
+        <div class="numpad">
+          <button class="num-btn" onclick="pinInput('1')">1</button>
+          <button class="num-btn" onclick="pinInput('2')">2</button>
+          <button class="num-btn" onclick="pinInput('3')">3</button>
+          <button class="num-btn" onclick="pinInput('4')">4</button>
+          <button class="num-btn" onclick="pinInput('5')">5</button>
+          <button class="num-btn" onclick="pinInput('6')">6</button>
+          <button class="num-btn" onclick="pinInput('7')">7</button>
+          <button class="num-btn" onclick="pinInput('8')">8</button>
+          <button class="num-btn" onclick="pinInput('9')">9</button>
+          <button class="num-btn" onclick="pinClear()" style="font-size:0.75rem;color:var(--text-light)">전체삭제</button>
+          <button class="num-btn" onclick="pinInput('0')">0</button>
+          <button class="num-btn del" onclick="pinDelete()">⌫</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 로그인 후 -->
+    <div id="adminContent" style="display:none;">
+      <div class="admin-header-bar">
+        <div class="admin-title">🛠️ 관리자 패널</div>
+        <button class="admin-logout-btn" onclick="adminLogout()">로그아웃</button>
+      </div>
+
+      <!-- 통계 -->
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-num" id="statTotal">0</div><div class="stat-label">전체 예약</div></div>
+        <div class="stat-card"><div class="stat-num" id="statRoom3">0</div><div class="stat-label">ROOM 3</div></div>
+        <div class="stat-card"><div class="stat-num" id="statRoom4">0</div><div class="stat-label">ROOM 4</div></div>
+        <div class="stat-card"><div class="stat-num" id="statLocked">0</div><div class="stat-label">잠금 슬롯</div></div>
+      </div>
+
+      <!-- 슬롯 잠금 관리 -->
+      <div class="admin-section-title">슬롯 잠금 / 해제</div>
+      <div class="admin-room-tabs">
+        <button class="admin-room-tab active" onclick="adminSwitchRoom('room3')" id="arRoom3">ROOM 3</button>
+        <button class="admin-room-tab"        onclick="adminSwitchRoom('room4')" id="arRoom4">ROOM 4</button>
+      </div>
+      <div class="admin-day-tabs" id="adminDayTabs"></div>
+      <div class="admin-grid-wrap">
+        <div class="admin-grid-header">
+          <div class="admin-tg-time">시간</div>
+          <div class="admin-tg-day" id="adminGridHead">--</div>
+        </div>
+        <div id="adminSlots"></div>
+      </div>
+
+      <!-- 전체 예약 현황 -->
+      <div class="admin-section-title">전체 예약 현황</div>
+      <div class="res-table-wrap">
+        <table class="res-table">
+          <thead>
+            <tr>
+              <th>룸</th><th>요일</th><th>시간</th><th>닉네임</th><th>예약 시각</th><th>취소</th>
+            </tr>
+          </thead>
+          <tbody id="adminResTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
 </main>
 
+<!-- ══ MODALS ══ -->
 <div class="overlay" id="successOverlay">
   <div class="modal">
-    <div class="modal-icon">🎤</div>
-    <div class="modal-title">예약 완료!</div>
+    <div class="modal-icon">🎤</div><div class="modal-title">예약 완료!</div>
     <div class="modal-body" id="successBody"></div>
     <div class="modal-detail" id="successDetail"></div>
     <div class="modal-btns"><button class="modal-btn primary" onclick="closeModal('successOverlay')">확인</button></div>
@@ -346,16 +514,14 @@ main { max-width: 1060px; margin: 0 auto; padding: 28px 20px 80px; }
 </div>
 <div class="overlay" id="alertOverlay">
   <div class="modal">
-    <div class="modal-icon" id="alertIcon">⚠️</div>
-    <div class="modal-title" id="alertTitle">알림</div>
+    <div class="modal-icon" id="alertIcon">⚠️</div><div class="modal-title" id="alertTitle">알림</div>
     <div class="modal-body" id="alertBody"></div>
     <div class="modal-btns"><button class="modal-btn primary" onclick="closeModal('alertOverlay')">확인</button></div>
   </div>
 </div>
 <div class="overlay" id="cancelOverlay">
   <div class="modal">
-    <div class="modal-icon">🗑️</div>
-    <div class="modal-title">예약 취소</div>
+    <div class="modal-icon">🗑️</div><div class="modal-title">예약 취소</div>
     <div class="modal-body" id="cancelBody"></div>
     <div class="modal-detail" id="cancelDetail"></div>
     <div class="modal-btns">
@@ -366,8 +532,7 @@ main { max-width: 1060px; margin: 0 auto; padding: 28px 20px 80px; }
 </div>
 <div class="overlay" id="editOverlay">
   <div class="modal edit-modal">
-    <div class="modal-icon">✏️</div>
-    <div class="modal-title">예약 변경</div>
+    <div class="modal-icon">✏️</div><div class="modal-title">예약 변경</div>
     <div class="modal-body" id="editBody"></div>
     <div class="edit-grid" id="editGrid"></div>
     <div class="modal-btns">
@@ -381,11 +546,11 @@ main { max-width: 1060px; margin: 0 auto; padding: 28px 20px 80px; }
 // ═══════════════════════════════════════
 //  CONFIG
 // ═══════════════════════════════════════
-const API = 'https://script.google.com/macros/s/AKfycbzR_TfMAjGS6W9_srzadQIDR7h7A6ku-X62Y5XwMR33Mnbpt5MIkyrrRXSPpK2lzT1l/exec';
+const API      = 'https://script.google.com/macros/s/AKfycbzR_TfMAjGS6W9_srzadQIDR7h7A6ku-X62Y5XwMR33Mnbpt5MIkyrrRXSPpK2lzT1l/exec';
+const PIN      = '1234'; // ← 여기서 4자리 암호 변경
 
 async function apiCall(params) {
-  const qs  = new URLSearchParams(params).toString();
-  const res = await fetch(`${API}?${qs}`);
+  const res = await fetch(`${API}?${new URLSearchParams(params)}`);
   return res.json();
 }
 
@@ -395,105 +560,79 @@ const DAY_KO = { MON:'월요일', TUE:'화요일', WED:'수요일', THU:'목요�
 const DAY_JS = { MON:1, TUE:2, WED:3, THU:4, FRI:5, SAT:6 };
 
 const BASE = {
-  room3: {
-    MON:[1,0,0,0,0,0,0,0,0,0], TUE:[1,1,1,0,0,0,0,0,0,0],
-    WED:[1,1,1,0,0,0,0,0,0,0], THU:[1,1,1,1,0,0,0,0,0,0],
-    FRI:[1,1,0,0,0,0,0,0,0,0], SAT:[0,0,0,0,1,1,1,0,0,0],
-  },
-  room4: {
-    MON:[1,1,1,1,1,1,1,1,1,1], TUE:[1,1,1,1,0,0,0,0,0,0],
-    WED:[0,0,0,0,0,0,1,1,1,1], THU:[1,1,1,1,1,1,1,1,1,1],
-    FRI:[1,1,1,1,1,1,1,1,1,1], SAT:[1,1,1,1,1,1,1,1,1,1],
-  }
+  room3: { MON:[1,0,0,0,0,0,0,0,0,0], TUE:[1,1,1,0,0,0,0,0,0,0], WED:[1,1,1,0,0,0,0,0,0,0], THU:[1,1,1,1,0,0,0,0,0,0], FRI:[1,1,0,0,0,0,0,0,0,0], SAT:[0,0,0,0,1,1,1,0,0,0] },
+  room4: { MON:[1,1,1,1,1,1,1,1,1,1], TUE:[1,1,1,1,0,0,0,0,0,0], WED:[0,0,0,0,0,0,1,1,1,1], THU:[1,1,1,1,1,1,1,1,1,1], FRI:[1,1,1,1,1,1,1,1,1,1], SAT:[1,1,1,1,1,1,1,1,1,1] }
 };
 
 // ═══════════════════════════════════════
 //  STATE
 // ═══════════════════════════════════════
-let reservations = [];
+let reservations = [];   // 확정 예약
+let adminLocks   = [];   // 관리자 잠금: [{room, day, time}]
 let pending      = [];
 let currentRoom  = 'room3';
 let currentDay   = 'MON';
-let editId       = null;
-let editNewTime  = null;
+let adminRoom    = 'room3';
+let adminDay     = 'MON';
+let editId = null, editNewTime = null;
+let adminLoggedIn = false;
+let pinBuffer = '';
 
 // ═══════════════════════════════════════
 //  API
 // ═══════════════════════════════════════
-async function loadReservations(manual = false) {
+function normalizeTime(val) {
+  if (!val) return '';
+  const s = String(val).trim();
+  if (/^\d{1,2}:\d{2}$/.test(s)) return s.padStart(5,'0');
+  if (/^\d{1,2}:\d{2}:\d{2}/.test(s)) return s.slice(0,5);
+  const d = new Date(s);
+  if (!isNaN(d.getTime())) return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+  return s;
+}
+
+async function loadAll(manual = false) {
   setSyncStatus('syncing');
   try {
+    // 예약 데이터 로드
     const json = await apiCall({});
-    reservations = (json.data || []).filter(r => r.id && r.id.trim() !== '');
+    const all  = (json.data || []).filter(r => r.id && r.id.trim() !== '');
 
-    // 혹시 time 값이 Date 문자열로 오는 경우 "HH:MM" 으로 정규화
-    reservations = reservations.map(r => ({
-      ...r,
-      time: normalizeTime(r.time)
-    }));
+    // 관리자 잠금(nick==='__ADMIN_LOCK__')과 일반 예약 분리
+    adminLocks   = all.filter(r => r.nick === '__ADMIN_LOCK__').map(r => ({ ...r, time: normalizeTime(r.time) }));
+    reservations = all.filter(r => r.nick !== '__ADMIN_LOCK__').map(r => ({ ...r, time: normalizeTime(r.time) }));
 
     setSyncStatus('ok');
   } catch(e) {
     setSyncStatus('err');
-    if (manual) showAlert('❌', '연결 오류', '구글 시트에 연결할 수 없습니다.<br>잠시 후 다시 시도해주세요.');
+    if (manual) showAlert('❌','연결 오류','구글 시트에 연결할 수 없습니다.<br>잠시 후 다시 시도해주세요.');
   }
   renderAll();
-}
-
-// time 값 정규화: "14:00:00", Date 문자열 등 → "14:00"
-function normalizeTime(val) {
-  if (!val) return '';
-  const s = String(val).trim();
-
-  // 이미 "HH:MM" 형식이면 그대로
-  if (/^\d{1,2}:\d{2}$/.test(s)) return s.padStart(5, '0');
-
-  // "HH:MM:SS" 형식
-  if (/^\d{1,2}:\d{2}:\d{2}/.test(s)) return s.slice(0, 5);
-
-  // Date 문자열 (예: "Sat Dec 30 1899 14:00:00 GMT+...")
-  const d = new Date(s);
-  if (!isNaN(d.getTime())) {
-    const hh = String(d.getHours()).padStart(2, '0');
-    const mm = String(d.getMinutes()).padStart(2, '0');
-    return `${hh}:${mm}`;
-  }
-
-  return s;
+  if (adminLoggedIn) renderAdminPanel();
 }
 
 async function apiAdd(row)         { return apiCall({ action:'add',    ...row }); }
 async function apiDelete(id)       { return apiCall({ action:'delete', id }); }
 async function apiUpdate(id, time) { return apiCall({ action:'update', id, time }); }
 
-function setSyncStatus(state) {
-  const dot  = document.getElementById('syncDot');
-  const text = document.getElementById('syncText');
-  if      (state === 'syncing') { dot.className='sync-dot syncing'; text.textContent='동기화 중...'; }
-  else if (state === 'ok')      { dot.className='sync-dot';         text.textContent=`마지막 동기화: ${fmtTime(new Date())}`; }
-  else                          { dot.className='sync-dot err';     text.textContent='연결 오류 — 새로고침을 눌러주세요'; }
+function setSyncStatus(s) {
+  const dot = document.getElementById('syncDot'), txt = document.getElementById('syncText');
+  if (s==='syncing') { dot.className='sync-dot syncing'; txt.textContent='동기화 중...'; }
+  else if (s==='ok') { dot.className='sync-dot';         txt.textContent=`마지막 동기화: ${fmtTime(new Date())}`; }
+  else               { dot.className='sync-dot err';     txt.textContent='연결 오류 — 새로고침을 눌러주세요'; }
 }
 
 // ═══════════════════════════════════════
-//  슬롯 상태 판별
+//  SLOT HELPERS
 // ═══════════════════════════════════════
-function isSlotTaken(room, day, time, excludeId = null) {
-  return reservations.some(r =>
-    r.room === room &&
-    r.day  === day  &&
-    r.time === time &&
-    (excludeId === null || r.id !== excludeId)
-  );
+function isSlotTaken(room, day, time, excludeId=null) {
+  return reservations.some(r => r.room===room && r.day===day && r.time===time && (excludeId===null || r.id!==excludeId));
 }
-
 function isMySlot(nick, room, day, time) {
-  if (!nick) return false;
-  return reservations.some(r =>
-    r.nick === nick &&
-    r.room === room &&
-    r.day  === day  &&
-    r.time === time
-  );
+  return nick && reservations.some(r => r.nick===nick && r.room===room && r.day===day && r.time===time);
+}
+function isAdminLocked(room, day, time) {
+  return adminLocks.some(l => l.room===room && l.day===day && l.time===time);
 }
 
 // ═══════════════════════════════════════
@@ -502,243 +641,154 @@ function isMySlot(nick, room, day, time) {
 function getNow()    { return new Date(); }
 function nextHour(t) { return String(parseInt(t)+1).padStart(2,'0')+':00'; }
 function fmtTime(d)  { return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; }
-
 function isWindowOpen(dayStr) {
-  const n = getNow();
-  const h = n.getHours() + n.getMinutes()/60;
-  let prevJS = DAY_JS[dayStr] - 1;
-  if (prevJS < 0) prevJS = 6;
-  return n.getDay() === prevJS && h >= 12 && h < 20;
+  const n=getNow(), h=n.getHours()+n.getMinutes()/60;
+  let p=DAY_JS[dayStr]-1; if(p<0) p=6;
+  return n.getDay()===p && h>=12 && h<20;
 }
-
 function bookableDays() { return DAYS.filter(isWindowOpen); }
-
 function formatNow() {
-  const n = getNow(), p = x => String(x).padStart(2,'0');
-  const wd = ['일','월','화','수','목','금','토'][n.getDay()];
-  return `${n.getFullYear()}.${p(n.getMonth()+1)}.${p(n.getDate())} (${wd}) ${p(n.getHours())}:${p(n.getMinutes())}`;
+  const n=getNow(), p=x=>String(x).padStart(2,'0');
+  return `${n.getFullYear()}.${p(n.getMonth()+1)}.${p(n.getDate())} (${['일','월','화','수','목','금','토'][n.getDay()]}) ${p(n.getHours())}:${p(n.getMinutes())}`;
 }
 
 // ═══════════════════════════════════════
 //  TAB
 // ═══════════════════════════════════════
 function switchTab(tab) {
-  document.getElementById('tabBook').classList.toggle('active', tab==='book');
-  document.getElementById('tabMy').classList.toggle('active', tab==='my');
-  document.getElementById('panelBook').classList.toggle('active', tab==='book');
-  document.getElementById('panelMy').classList.toggle('active', tab==='my');
+  ['book','my','admin'].forEach(t => {
+    const btn = document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1));
+    if (btn) btn.classList.toggle('active', t===tab);
+    const pan = document.getElementById('panel'+t.charAt(0).toUpperCase()+t.slice(1));
+    if (pan) pan.classList.toggle('active', t===tab);
+  });
 }
 
 // ═══════════════════════════════════════
-//  RENDER
+//  RENDER — 예약하기
 // ═══════════════════════════════════════
 function renderAll() {
   document.getElementById('loadingOverlay').classList.add('hide');
   document.getElementById('currentDateTime').textContent = formatNow();
-  renderDayTabs();
-  renderGrid();
-  renderChips();
-  updateSubmit();
+  renderDayTabs(); renderGrid(); renderChips(); updateSubmit();
 }
 
 function renderDayTabs() {
   const open = bookableDays();
   document.getElementById('bookableInfo').textContent =
-    open.length
-      ? ` — 현재 예약 가능: ${open.map(d => DAY_KO[d]).join(', ')}`
-      : ' — 현재 예약 창이 열린 날짜가 없습니다.';
-
+    open.length ? ` — 현재 예약 가능: ${open.map(d=>DAY_KO[d]).join(', ')}` : ' — 현재 예약 창이 열린 날짜가 없습니다.';
   document.getElementById('dayTabs').innerHTML = DAYS.map(d => {
-    const isOpen = open.includes(d), isCur = d === currentDay;
+    const isOpen=open.includes(d), isCur=d===currentDay;
     return `<button class="day-tab ${isOpen?'bookable':''} ${isCur?'active':''}" onclick="selectDay('${d}')">
       ${d}<br><small style="font-size:0.62rem;font-weight:400;opacity:0.75">${DAY_KO[d][0]}</small>
-      ${isOpen ? '<div class="open-dot"></div>' : ''}
+      ${isOpen?'<div class="open-dot"></div>':''}
     </button>`;
   }).join('');
 }
 
 function renderGrid() {
-  const nick   = document.getElementById('bookNick').value.trim();
-  const isOpen = isWindowOpen(currentDay);
-
-  document.getElementById('gridHeadDay').textContent =
-    `${currentDay} · ${DAY_KO[currentDay]}  ${isOpen ? '✅ 예약 창 열림' : '🔒 예약 창 닫힘'}`;
-
-  const container = document.getElementById('timeSlots');
-  container.innerHTML = '';
-
-  TIMES.forEach((t, ti) => {
-    const baseOk = BASE[currentRoom][currentDay][ti] === 1;
-    const taken  = isSlotTaken(currentRoom, currentDay, t);
-    const isMine = isMySlot(nick, currentRoom, currentDay, t);
-    const isPend = pending.some(s => s.room===currentRoom && s.day===currentDay && s.time===t);
-
-    const row  = document.createElement('div'); row.className = 'time-slot-row';
-    const lbl  = document.createElement('div'); lbl.className = 'ts-label'; lbl.textContent = t;
-    const cell = document.createElement('div'); cell.className = 'ts-cell';
-
-    if (isPend) {
-      cell.classList.add('selected');
-      cell.onclick = () => deselect(currentRoom, currentDay, t);
-    } else if (isMine) {
-      cell.classList.add('my-res');
-      cell.title = '내 예약';
-    } else if (!isOpen) {
-      cell.classList.add('locked');
-      cell.title = '예약 창이 닫혀있습니다 (전날 12:00~20:00에 예약 가능)';
-    } else if (!baseOk || taken) {
-      cell.classList.add('blocked');
-      cell.title = taken ? '이미 예약된 시간입니다' : '예약 불가 시간';
-    } else {
-      cell.classList.add('avail');
-      cell.onclick = () => selectSlot(currentRoom, currentDay, t);
-    }
-
-    row.appendChild(lbl);
-    row.appendChild(cell);
-    container.appendChild(row);
+  const nick=document.getElementById('bookNick').value.trim(), isOpen=isWindowOpen(currentDay);
+  document.getElementById('gridHeadDay').textContent = `${currentDay} · ${DAY_KO[currentDay]}  ${isOpen?'✅ 예약 창 열림':'🔒 예약 창 닫힘'}`;
+  const container=document.getElementById('timeSlots'); container.innerHTML='';
+  TIMES.forEach((t,ti) => {
+    const baseOk=BASE[currentRoom][currentDay][ti]===1;
+    const taken=isSlotTaken(currentRoom,currentDay,t);
+    const isMine=isMySlot(nick,currentRoom,currentDay,t);
+    const isPend=pending.some(s=>s.room===currentRoom&&s.day===currentDay&&s.time===t);
+    const isLocked=isAdminLocked(currentRoom,currentDay,t);
+    const row=document.createElement('div'); row.className='time-slot-row';
+    const lbl=document.createElement('div'); lbl.className='ts-label'; lbl.textContent=t;
+    const cell=document.createElement('div'); cell.className='ts-cell';
+    if      (isPend)           { cell.classList.add('selected');     cell.onclick=()=>deselect(currentRoom,currentDay,t); }
+    else if (isMine)           { cell.classList.add('my-res');       cell.title='내 예약'; }
+    else if (isLocked)         { cell.classList.add('admin-locked'); cell.title='관리자 잠금'; }
+    else if (!isOpen)          { cell.classList.add('locked');       cell.title='예약 창이 닫혀있습니다'; }
+    else if (!baseOk||taken)   { cell.classList.add('blocked');      cell.title=taken?'이미 예약된 시간':'예약 불가 시간'; }
+    else                       { cell.classList.add('avail');        cell.onclick=()=>selectSlot(currentRoom,currentDay,t); }
+    row.appendChild(lbl); row.appendChild(cell); container.appendChild(row);
   });
 }
 
 function renderChips() {
-  const list = document.getElementById('chipList');
-  if (!pending.length) { list.innerHTML = '<div class="chip-empty">예약할 시간을 선택하세요</div>'; return; }
-  list.innerHTML = pending.map(s =>
-    `<div class="chip">${s.room.toUpperCase()} · ${s.day} ${s.time}
-      <span class="chip-x" onclick="deselect('${s.room}','${s.day}','${s.time}')">×</span></div>`
-  ).join('');
+  const list=document.getElementById('chipList');
+  if (!pending.length) { list.innerHTML='<div class="chip-empty">예약할 시간을 선택하세요</div>'; return; }
+  list.innerHTML=pending.map(s=>`<div class="chip">${s.room.toUpperCase()} · ${s.day} ${s.time}<span class="chip-x" onclick="deselect('${s.room}','${s.day}','${s.time}')">×</span></div>`).join('');
 }
 
 // ═══════════════════════════════════════
 //  BOOKING INTERACTIONS
 // ═══════════════════════════════════════
-function selectDay(d) { currentDay = d; renderAll(); }
-
+function selectDay(d) { currentDay=d; renderAll(); }
 function switchRoom(r) {
-  currentRoom = r;
-  document.getElementById('rtRoom3').classList.toggle('active', r==='room3');
-  document.getElementById('rtRoom4').classList.toggle('active', r==='room4');
+  currentRoom=r;
+  document.getElementById('rtRoom3').classList.toggle('active',r==='room3');
+  document.getElementById('rtRoom4').classList.toggle('active',r==='room4');
   renderAll();
 }
-
-function selectSlot(room, day, time) {
-  const nick = document.getElementById('bookNick').value.trim();
-  if (!nick) {
-    const inp = document.getElementById('bookNick');
-    inp.classList.add('error'); inp.focus();
-    setTimeout(() => inp.classList.remove('error'), 600);
-    showAlert('⚠️', '닉네임 필요', '예약 전에 닉네임을 입력해주세요.');
-    return;
-  }
-  if (isSlotTaken(room, day, time)) {
-    showAlert('❌', '예약 마감', '방금 다른 분이 예약한 시간입니다.<br>새로고침 후 다시 확인해주세요.');
-    loadReservations();
-    return;
-  }
-  const dayBooked  = reservations.filter(r => r.nick===nick && r.day===day).length;
-  const dayPending = pending.filter(s => s.day===day).length;
-  if (dayBooked + dayPending >= 2) {
-    showAlert('⚠️', '하루 2타임 초과',
-      `<b>${DAY_KO[day]}</b>에 이미 2타임이 선택/예약되었습니다.<br>1인당 하루 최대 2타임까지 가능합니다.`);
-    return;
-  }
-  pending.push({ room, day, time });
-  renderAll();
+function selectSlot(room,day,time) {
+  const nick=document.getElementById('bookNick').value.trim();
+  if (!nick) { const i=document.getElementById('bookNick'); i.classList.add('error'); i.focus(); setTimeout(()=>i.classList.remove('error'),600); showAlert('⚠️','닉네임 필요','예약 전에 닉네임을 입력해주세요.'); return; }
+  if (isSlotTaken(room,day,time)||isAdminLocked(room,day,time)) { showAlert('❌','예약 불가','해당 시간은 예약할 수 없습니다.<br>새로고침 후 다시 확인해주세요.'); loadAll(); return; }
+  const dayBooked=reservations.filter(r=>r.nick===nick&&r.day===day).length;
+  const dayPend=pending.filter(s=>s.day===day).length;
+  if (dayBooked+dayPend>=2) { showAlert('⚠️','하루 2타임 초과',`<b>${DAY_KO[day]}</b>에 이미 2타임이 선택/예약되었습니다.<br>1인당 하루 최대 2타임까지 가능합니다.`); return; }
+  pending.push({room,day,time}); renderAll();
 }
-
-function deselect(room, day, time) {
-  pending = pending.filter(s => !(s.room===room && s.day===day && s.time===time));
-  renderAll();
-}
-
+function deselect(room,day,time) { pending=pending.filter(s=>!(s.room===room&&s.day===day&&s.time===time)); renderAll(); }
 function updateSubmit() {
-  const nick = document.getElementById('bookNick').value.trim();
-  document.getElementById('submitBtn').disabled = !nick || !pending.length;
-  const days = {};
-  pending.forEach(s => { days[s.day] = (days[s.day]||0)+1; });
-  const max  = pending.length ? Math.max(...Object.values(days)) : 0;
-  const pill = document.getElementById('quotaPill');
-  pill.textContent = `선택 ${pending.length} / 2`;
-  pill.className   = 'quota-pill' + (max>=2?' full': max===1?' warn':'');
+  const nick=document.getElementById('bookNick').value.trim();
+  document.getElementById('submitBtn').disabled=!nick||!pending.length;
+  const days={}; pending.forEach(s=>{days[s.day]=(days[s.day]||0)+1;});
+  const max=pending.length?Math.max(...Object.values(days)):0;
+  const pill=document.getElementById('quotaPill');
+  pill.textContent=`선택 ${pending.length} / 2`;
+  pill.className='quota-pill'+(max>=2?' full':max===1?' warn':'');
 }
 
 // ═══════════════════════════════════════
 //  SUBMIT
 // ═══════════════════════════════════════
 async function submitBooking() {
-  const nick = document.getElementById('bookNick').value.trim();
-  if (!nick || !pending.length) return;
-
+  const nick=document.getElementById('bookNick').value.trim();
+  if (!nick||!pending.length) return;
   for (const s of pending) {
-    const ti = TIMES.indexOf(s.time);
-    if (!BASE[s.room][s.day][ti]) {
-      showAlert('❌', '예약 불가', '선택한 시간은 예약 불가 시간입니다.'); return;
-    }
-    if (isSlotTaken(s.room, s.day, s.time)) {
-      showAlert('❌', '예약 마감',
-        `<b>${s.room.toUpperCase()} · ${DAY_KO[s.day]} ${s.time}</b>는 이미 예약된 시간입니다.<br>새로고침 후 다시 선택해주세요.`);
-      await loadReservations(); return;
-    }
+    const ti=TIMES.indexOf(s.time);
+    if (!BASE[s.room][s.day][ti]||isAdminLocked(s.room,s.day,s.time)) { showAlert('❌','예약 불가','선택한 시간은 예약할 수 없습니다.'); return; }
+    if (isSlotTaken(s.room,s.day,s.time)) { showAlert('❌','예약 마감',`이미 예약된 시간입니다.<br>새로고침 후 다시 선택해주세요.`); await loadAll(); return; }
   }
-
-  const btn = document.getElementById('submitBtn');
-  btn.disabled = true; btn.textContent = '저장 중...';
-
-  const confirmed = pending.map(s => ({
-    id:   `${Date.now()}_${Math.random().toString(36).slice(2,7)}`,
-    nick, room: s.room, day: s.day, time: s.time,
-    at:   new Date().toISOString()
-  }));
-
+  const btn=document.getElementById('submitBtn'); btn.disabled=true; btn.textContent='저장 중...';
+  const confirmed=pending.map(s=>({ id:`${Date.now()}_${Math.random().toString(36).slice(2,7)}`, nick, room:s.room, day:s.day, time:s.time, at:new Date().toISOString() }));
   try {
     for (const c of confirmed) await apiAdd(c);
-    await loadReservations();
-
-    document.getElementById('successBody').innerHTML   = `<b>${nick}</b>님의 예약이 확정되었습니다!`;
-    document.getElementById('successDetail').innerHTML =
-      confirmed.map(c => `📍 <b>${c.room.toUpperCase()}</b> · ${DAY_KO[c.day]} ${c.time} ~ ${nextHour(c.time)}`).join('<br>');
+    await loadAll();
+    document.getElementById('successBody').innerHTML=`<b>${nick}</b>님의 예약이 확정되었습니다!`;
+    document.getElementById('successDetail').innerHTML=confirmed.map(c=>`📍 <b>${c.room.toUpperCase()}</b> · ${DAY_KO[c.day]} ${c.time} ~ ${nextHour(c.time)}`).join('<br>');
     document.getElementById('successOverlay').classList.add('show');
-    pending = [];
-    renderAll();
-  } catch(e) {
-    showAlert('❌', '저장 실패', '네트워크 오류가 발생했습니다.<br>다시 시도해주세요.');
-  }
-
-  btn.disabled = false; btn.textContent = '예약 확정하기';
-  updateSubmit();
+    pending=[]; renderAll();
+  } catch(e) { showAlert('❌','저장 실패','네트워크 오류가 발생했습니다.'); }
+  btn.disabled=false; btn.textContent='예약 확정하기'; updateSubmit();
 }
 
 // ═══════════════════════════════════════
 //  MY RESERVATIONS
 // ═══════════════════════════════════════
 function searchReservations() {
-  const nick = document.getElementById('searchNick').value.trim();
+  const nick=document.getElementById('searchNick').value.trim();
   if (!nick) { showAlert('⚠️','닉네임 필요','닉네임을 입력해주세요.'); return; }
-
-  const mine = reservations.filter(r => r.nick === nick);
-  const container = document.getElementById('myResList');
-
-  if (!mine.length) {
-    container.innerHTML = `<div class="res-empty">
-      <div class="res-empty-icon">🔍</div>
-      <div class="res-empty-text"><b>${nick}</b>님의 예약 내역이 없습니다.</div></div>`;
-    return;
-  }
-
-  const order = { MON:0, TUE:1, WED:2, THU:3, FRI:4, SAT:5 };
-  mine.sort((a,b) => order[a.day]-order[b.day] || a.time.localeCompare(b.time));
-
-  container.innerHTML = mine.map(r => {
-    const canModify = isWindowOpen(r.day);
+  const mine=reservations.filter(r=>r.nick===nick);
+  const container=document.getElementById('myResList');
+  if (!mine.length) { container.innerHTML=`<div class="res-empty"><div class="res-empty-icon">🔍</div><div class="res-empty-text"><b>${nick}</b>님의 예약 내역이 없습니다.</div></div>`; return; }
+  const order={MON:0,TUE:1,WED:2,THU:3,FRI:4,SAT:5};
+  mine.sort((a,b)=>order[a.day]-order[b.day]||a.time.localeCompare(b.time));
+  container.innerHTML=mine.map(r=>{
+    const canModify=isWindowOpen(r.day);
     return `<div class="res-card">
       <div class="res-room-badge">${r.room.toUpperCase()}<small>1F</small></div>
       <div class="res-info">
         <div class="res-day">${r.day} · ${DAY_KO[r.day]}</div>
         <div class="res-time">${r.time} – ${nextHour(r.time)} <span>1시간</span></div>
         <span class="res-status">예약확정</span>
-        <span class="res-window-badge ${canModify?'':'res-window-closed'}">
-          ${canModify ? '✅ 변경/취소 가능' : '🔒 변경 불가'}
-        </span>
+        <span class="res-window-badge ${canModify?'':'res-window-closed'}">${canModify?'✅ 변경/취소 가능':'🔒 변경 불가'}</span>
       </div>
       <div class="res-actions">
         <button class="action-btn edit" ${canModify?'':'disabled'} onclick="openEdit('${r.id}','${nick}')">변경</button>
@@ -748,104 +798,215 @@ function searchReservations() {
   }).join('');
 }
 
-// CANCEL
-let pendingCancelId = null;
-function openCancel(id, nick) {
-  const r = reservations.find(x => x.id===id); if (!r) return;
-  pendingCancelId = id;
-  document.getElementById('cancelBody').innerHTML =
-    `<b>${nick}</b>님의 예약을 취소하시겠습니까?<br>
-     <small style="color:var(--text-light)">취소 후 해당 시간은 다른 분이 예약할 수 있습니다.</small>`;
-  document.getElementById('cancelDetail').innerHTML =
-    `📍 <b>${r.room.toUpperCase()}</b> · ${DAY_KO[r.day]}<br>🕐 ${r.time} ~ ${nextHour(r.time)}`;
-  document.getElementById('cancelConfirmBtn').onclick = () => confirmCancel(nick);
+let pendingCancelId=null;
+function openCancel(id,nick) {
+  const r=reservations.find(x=>x.id===id); if(!r) return;
+  pendingCancelId=id;
+  document.getElementById('cancelBody').innerHTML=`<b>${nick}</b>님의 예약을 취소하시겠습니까?<br><small style="color:var(--text-light)">취소 후 해당 시간은 다른 분이 예약할 수 있습니다.</small>`;
+  document.getElementById('cancelDetail').innerHTML=`📍 <b>${r.room.toUpperCase()}</b> · ${DAY_KO[r.day]}<br>🕐 ${r.time} ~ ${nextHour(r.time)}`;
+  document.getElementById('cancelConfirmBtn').onclick=()=>confirmCancel();
   document.getElementById('cancelOverlay').classList.add('show');
 }
-
-async function confirmCancel(nick) {
-  try {
-    await apiDelete(pendingCancelId);
-    await loadReservations();
-    closeModal('cancelOverlay');
-    searchReservations();
-  } catch(e) { showAlert('❌', '오류', '취소 중 오류가 발생했습니다.'); }
+async function confirmCancel() {
+  try { await apiDelete(pendingCancelId); await loadAll(); closeModal('cancelOverlay'); searchReservations(); }
+  catch(e) { showAlert('❌','오류','취소 중 오류가 발생했습니다.'); }
 }
 
-// EDIT
-function openEdit(id, nick) {
-  const r = reservations.find(x => x.id===id); if (!r) return;
-  if (!isWindowOpen(r.day)) {
-    showAlert('🔒','변경 불가',
-      `<b>${DAY_KO[r.day]}</b>의 예약 창이 닫혀있습니다.<br>전날 12:00~20:00 사이에만 변경 가능합니다.`);
-    return;
-  }
-  editId = id; editNewTime = null;
-  document.getElementById('editBody').innerHTML =
-    `<b>${r.room.toUpperCase()} · ${DAY_KO[r.day]}</b><br>변경할 시간을 선택하세요`;
-  document.getElementById('editConfirmBtn').disabled = true;
-  document.getElementById('editConfirmBtn').onclick  = () => confirmEdit(r);
-
-  const grid = document.getElementById('editGrid'); grid.innerHTML = '';
-  TIMES.forEach((t, ti) => {
-    const baseOk = BASE[r.room][r.day][ti] === 1;
-    const taken  = isSlotTaken(r.room, r.day, t, id);
-    const isCur  = t === r.time;
-    const btn    = document.createElement('button');
-    btn.className = 'edit-slot'; btn.textContent = t;
-    if      (isCur)            { btn.classList.add('current'); btn.disabled=true; }
-    else if (!baseOk || taken) { btn.classList.add('blocked'); btn.disabled=true; }
-    else                       { btn.classList.add('avail');   btn.onclick=()=>pickEditTime(t,grid,btn); }
+function openEdit(id,nick) {
+  const r=reservations.find(x=>x.id===id); if(!r) return;
+  if (!isWindowOpen(r.day)) { showAlert('🔒','변경 불가',`<b>${DAY_KO[r.day]}</b>의 예약 창이 닫혀있습니다.<br>전날 12:00~20:00 사이에만 변경 가능합니다.`); return; }
+  editId=id; editNewTime=null;
+  document.getElementById('editBody').innerHTML=`<b>${r.room.toUpperCase()} · ${DAY_KO[r.day]}</b><br>변경할 시간을 선택하세요`;
+  document.getElementById('editConfirmBtn').disabled=true;
+  document.getElementById('editConfirmBtn').onclick=()=>confirmEdit(r);
+  const grid=document.getElementById('editGrid'); grid.innerHTML='';
+  TIMES.forEach((t,ti)=>{
+    const baseOk=BASE[r.room][r.day][ti]===1, taken=isSlotTaken(r.room,r.day,t,id), locked=isAdminLocked(r.room,r.day,t), isCur=t===r.time;
+    const btn=document.createElement('button'); btn.className='edit-slot'; btn.textContent=t;
+    if (isCur) { btn.classList.add('current'); btn.disabled=true; }
+    else if (!baseOk||taken||locked) { btn.classList.add('blocked'); btn.disabled=true; }
+    else { btn.classList.add('avail'); btn.onclick=()=>pickEditTime(t,grid,btn); }
     grid.appendChild(btn);
   });
   document.getElementById('editOverlay').classList.add('show');
 }
-
-function pickEditTime(t, grid, btnEl) {
-  editNewTime = t;
-  grid.querySelectorAll('.edit-slot').forEach(b => {
-    if (b.classList.contains('pick')) { b.classList.remove('pick'); b.classList.add('avail'); }
-  });
+function pickEditTime(t,grid,btnEl) {
+  editNewTime=t;
+  grid.querySelectorAll('.edit-slot').forEach(b=>{if(b.classList.contains('pick')){b.classList.remove('pick');b.classList.add('avail');}});
   btnEl.classList.remove('avail'); btnEl.classList.add('pick');
-  document.getElementById('editConfirmBtn').disabled = false;
+  document.getElementById('editConfirmBtn').disabled=false;
 }
-
 async function confirmEdit(orig) {
   if (!editNewTime) return;
-  if (isSlotTaken(orig.room, orig.day, editNewTime, editId)) {
-    showAlert('❌','변경 불가','방금 다른 분이 해당 시간을 예약했습니다.<br>다른 시간을 선택해주세요.');
-    await loadReservations(); closeModal('editOverlay'); return;
+  if (isSlotTaken(orig.room,orig.day,editNewTime,editId)||isAdminLocked(orig.room,orig.day,editNewTime)) { showAlert('❌','변경 불가','해당 시간은 이용할 수 없습니다.'); await loadAll(); closeModal('editOverlay'); return; }
+  try { await apiUpdate(editId,editNewTime); await loadAll(); closeModal('editOverlay'); searchReservations(); showAlert('✅','변경 완료',`<b>${orig.time}</b> → <b>${editNewTime} ~ ${nextHour(editNewTime)}</b>로 변경되었습니다.`); }
+  catch(e) { showAlert('❌','오류','변경 중 오류가 발생했습니다.'); }
+}
+
+// ═══════════════════════════════════════
+//  ADMIN — PIN
+// ═══════════════════════════════════════
+function pinInput(n) {
+  if (pinBuffer.length>=4) return;
+  pinBuffer+=n;
+  updatePinDots();
+  if (pinBuffer.length===4) setTimeout(checkPin,150);
+}
+function pinDelete() { pinBuffer=pinBuffer.slice(0,-1); updatePinDots(); }
+function pinClear()  { pinBuffer=''; updatePinDots(); }
+function updatePinDots(err=false) {
+  for (let i=0;i<4;i++) {
+    const d=document.getElementById('pd'+i);
+    d.className='pin-dot'+(i<pinBuffer.length?(err?' error':' filled'):'');
   }
+}
+function checkPin() {
+  if (pinBuffer===PIN) {
+    adminLoggedIn=true;
+    document.getElementById('adminLogin').style.display='none';
+    document.getElementById('adminContent').style.display='block';
+    renderAdminPanel();
+  } else {
+    updatePinDots(true);
+    setTimeout(()=>{ pinBuffer=''; updatePinDots(); },700);
+  }
+}
+function adminLogout() {
+  adminLoggedIn=false; pinBuffer='';
+  document.getElementById('adminLogin').style.display='block';
+  document.getElementById('adminContent').style.display='none';
+  updatePinDots();
+}
+
+// ═══════════════════════════════════════
+//  ADMIN — PANEL RENDER
+// ═══════════════════════════════════════
+function renderAdminPanel() {
+  // 통계
+  document.getElementById('statTotal').textContent  = reservations.length;
+  document.getElementById('statRoom3').textContent  = reservations.filter(r=>r.room==='room3').length;
+  document.getElementById('statRoom4').textContent  = reservations.filter(r=>r.room==='room4').length;
+  document.getElementById('statLocked').textContent = adminLocks.length;
+
+  // 요일 탭
+  document.getElementById('adminDayTabs').innerHTML = DAYS.map(d =>
+    `<button class="admin-day-tab ${d===adminDay?'active':''}" onclick="adminSelectDay('${d}')">${d} <small style="font-size:0.62rem;opacity:0.7">${DAY_KO[d][0]}</small></button>`
+  ).join('');
+
+  renderAdminGrid();
+  renderAdminResTable();
+}
+
+function adminSelectDay(d) { adminDay=d; renderAdminPanel(); }
+function adminSwitchRoom(r) {
+  adminRoom=r;
+  document.getElementById('arRoom3').classList.toggle('active',r==='room3');
+  document.getElementById('arRoom4').classList.toggle('active',r==='room4');
+  renderAdminPanel();
+}
+
+function renderAdminGrid() {
+  document.getElementById('adminGridHead').textContent=`${adminRoom.toUpperCase()} · ${adminDay} · ${DAY_KO[adminDay]}`;
+  const container=document.getElementById('adminSlots'); container.innerHTML='';
+
+  TIMES.forEach((t,ti)=>{
+    const baseOk   = BASE[adminRoom][adminDay][ti]===1;
+    const res      = reservations.find(r=>r.room===adminRoom&&r.day===adminDay&&r.time===t);
+    const locked   = isAdminLocked(adminRoom,adminDay,t);
+    const lockEntry= adminLocks.find(l=>l.room===adminRoom&&l.day===adminDay&&l.time===t);
+
+    const row=document.createElement('div'); row.className='admin-slot-row';
+    const lbl=document.createElement('div'); lbl.className='admin-slot-label'; lbl.textContent=t;
+    const cell=document.createElement('div'); cell.className='admin-slot-cell';
+
+    let statusHtml='', actionHtml='';
+
+    if (!baseOk) {
+      statusHtml=`<span class="admin-slot-status status-base-blocked">기본 불가</span>`;
+      actionHtml='';
+    } else if (locked) {
+      statusHtml=`<span class="admin-slot-status status-admin-locked">🔒 관리자 잠금</span>`;
+      actionHtml=`<button class="admin-toggle-btn btn-unlock" onclick="adminUnlock('${lockEntry.id}','${adminRoom}','${adminDay}','${t}')">잠금 해제</button>`;
+    } else if (res) {
+      statusHtml=`<span class="admin-slot-status status-reserved">예약됨</span><span class="admin-slot-nick">${res.nick}</span>`;
+      actionHtml=`<button class="admin-toggle-btn btn-force-cancel" onclick="adminForceCancel('${res.id}','${res.nick}','${t}')">강제 취소</button>
+                  <button class="admin-toggle-btn btn-lock" onclick="adminLock('${adminRoom}','${adminDay}','${t}')">잠금</button>`;
+    } else {
+      statusHtml=`<span class="admin-slot-status status-open">예약 가능</span>`;
+      actionHtml=`<button class="admin-toggle-btn btn-lock" onclick="adminLock('${adminRoom}','${adminDay}','${t}')">잠금</button>`;
+    }
+
+    cell.innerHTML=`<div class="admin-slot-info">${statusHtml}</div>${actionHtml}`;
+    row.appendChild(lbl); row.appendChild(cell); container.appendChild(row);
+  });
+}
+
+function renderAdminResTable() {
+  const order={MON:0,TUE:1,WED:2,THU:3,FRI:4,SAT:5};
+  const sorted=[...reservations].sort((a,b)=>order[a.day]-order[b.day]||a.room.localeCompare(b.room)||a.time.localeCompare(b.time));
+  const tbody=document.getElementById('adminResTable');
+  if (!sorted.length) {
+    tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text-light)">예약 내역이 없습니다</td></tr>';
+    return;
+  }
+  tbody.innerHTML=sorted.map(r=>{
+    const at=r.at?new Date(r.at).toLocaleString('ko-KR',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}):'–';
+    return `<tr>
+      <td class="room-cell">${r.room.toUpperCase()}</td>
+      <td>${r.day} ${DAY_KO[r.day][0]}</td>
+      <td>${r.time}~${nextHour(r.time)}</td>
+      <td class="nick-cell">${r.nick}</td>
+      <td style="font-size:0.72rem;color:var(--text-light)">${at}</td>
+      <td><button class="admin-cancel-btn" onclick="adminForceCancel('${r.id}','${r.nick}','${r.time}')">취소</button></td>
+    </tr>`;
+  }).join('');
+}
+
+// ── 관리자 잠금 / 해제 ──
+async function adminLock(room,day,time) {
   try {
-    await apiUpdate(editId, editNewTime);
-    await loadReservations();
-    closeModal('editOverlay');
-    searchReservations();
-    showAlert('✅','변경 완료',
-      `<b>${orig.time}</b> → <b>${editNewTime} ~ ${nextHour(editNewTime)}</b>로 변경되었습니다.`);
-  } catch(e) { showAlert('❌', '오류', '변경 중 오류가 발생했습니다.'); }
+    await apiAdd({ id:`lock_${Date.now()}_${Math.random().toString(36).slice(2,5)}`, nick:'__ADMIN_LOCK__', room, day, time, at:new Date().toISOString() });
+    await loadAll();
+    renderAdminPanel();
+  } catch(e) { showAlert('❌','오류','잠금 처리 중 오류가 발생했습니다.'); }
+}
+
+async function adminUnlock(lockId) {
+  try {
+    await apiDelete(lockId);
+    await loadAll();
+    renderAdminPanel();
+  } catch(e) { showAlert('❌','오류','잠금 해제 중 오류가 발생했습니다.'); }
+}
+
+async function adminForceCancel(id, nick, time) {
+  if (!confirm(`${nick}님의 ${time} 예약을 강제 취소하시겠습니까?`)) return;
+  try {
+    await apiDelete(id);
+    await loadAll();
+    renderAdminPanel();
+  } catch(e) { showAlert('❌','오류','강제 취소 중 오류가 발생했습니다.'); }
 }
 
 // ═══════════════════════════════════════
 //  MODAL UTILS
 // ═══════════════════════════════════════
 function closeModal(id) { document.getElementById(id).classList.remove('show'); }
-function showAlert(icon, title, body) {
-  document.getElementById('alertIcon').textContent  = icon;
-  document.getElementById('alertTitle').textContent = title;
-  document.getElementById('alertBody').innerHTML    = body;
+function showAlert(icon,title,body) {
+  document.getElementById('alertIcon').textContent=icon;
+  document.getElementById('alertTitle').textContent=title;
+  document.getElementById('alertBody').innerHTML=body;
   document.getElementById('alertOverlay').classList.add('show');
 }
 
 // ═══════════════════════════════════════
 //  INIT
 // ═══════════════════════════════════════
-document.getElementById('bookNick').addEventListener('input', () => { updateSubmit(); renderGrid(); });
-document.getElementById('searchNick').addEventListener('keydown', e => { if(e.key==='Enter') searchReservations(); });
-
-setInterval(() => loadReservations(), 60000);
-setInterval(() => { document.getElementById('currentDateTime').textContent = formatNow(); }, 30000);
-
-loadReservations();
+document.getElementById('bookNick').addEventListener('input',()=>{ updateSubmit(); renderGrid(); });
+document.getElementById('searchNick').addEventListener('keydown',e=>{ if(e.key==='Enter') searchReservations(); });
+setInterval(()=>loadAll(), 60000);
+setInterval(()=>{ document.getElementById('currentDateTime').textContent=formatNow(); }, 30000);
+loadAll();
 </script>
 </body>
 </html>
